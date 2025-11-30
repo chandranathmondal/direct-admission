@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy-to-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up gcloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Verify auth
+        run: gcloud auth list
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build image
+        run: |
+          gcloud builds submit \
+            --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/direct-admission:${{ env.IMAGE_TAG }} \
+            --build-arg REACT_APP_GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
+            --build-arg REACT_APP_ADMIN_EMAIL="${{ vars.ADMIN_EMAIL }}" \
+            --build-arg REACT_APP_GOOGLE_CLIENT_ID="${{ vars.GOOGLE_CLIENT_ID }}" \
+            .
+
+      - name: Deploy app
+        run: |
+          gcloud run deploy direct-admission-dev \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/direct-admission:${{ env.IMAGE_TAG }} \
+            --platform managed \
+            --region ${{ vars.REGION }} \
+            --allow-unauthenticated \
+            --memory ${{ vars.MEMORY }} \
+            --set-env-vars GOOGLE_SHEET_ID="${{ vars.GOOGLE_SHEET_ID }}" \
+            --set-env-vars GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \
+            --set-env-vars GOOGLE_PRIVATE_KEY="${{ secrets.GCP_PROJECT_ID }}"
