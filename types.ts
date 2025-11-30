@@ -6,6 +6,7 @@ export interface College {
   state: string;
   logoUrl?: string;
   description?: string; // Short bio of college
+  phone?: string; // Contact number for admissions
   rating: number; // 0 to 5
   ratingCount: number;
 }
@@ -27,6 +28,7 @@ export interface EnrichedCourse extends Course {
   location: string;
   state: string;
   logoUrl?: string;
+  collegePhone?: string;
 }
 
 export enum UserRole {
@@ -46,4 +48,6 @@ export interface SearchFilters {
   query: string;
   location?: string;
   state?: string;
+  maxFees?: number;
+  sortIntent?: 'fees_low' | 'fees_high' | 'rating';
 }

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { EnrichedCourse, College } from '../types';
 import { getCourseInsights } from '../services/geminiService';
@@ -80,6 +81,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
         
         {/* Header */}
         <div className="relative bg-gradient-to-r from-blue-900 to-slate-800 p-6 text-white shrink-0">
+           {/* Top Right Close Button */}
            <button 
             onClick={onClose}
             className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors z-20"
@@ -215,14 +217,14 @@ export const CourseModal: React.FC<CourseModalProps> = ({
 
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-200 bg-white flex justify-end shrink-0">
-          <button 
-            onClick={onClose}
-            className="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-medium transition-colors border border-slate-200"
+        {/* Footer with Book Your Seat Button (Centered) */}
+        <div className="p-4 border-t border-slate-200 bg-white flex justify-center shrink-0">
+          <a 
+            href={`tel:${collegeData.phone || '+918926026739'}`}
+            className="px-8 py-3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white rounded-lg font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-lg transform hover:-translate-y-0.5"
           >
-            Close
-          </button>
+            <span>📞</span> Book Your Seat
+          </a>
         </div>
       </div>
       <style>{`

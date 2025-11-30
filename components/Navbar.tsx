@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { User } from '../types';
 
@@ -20,7 +21,8 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
           <div className="flex gap-4">
             <span>🇮🇳 India's Trusted Admission Portal</span>
             <span className="text-slate-500">|</span>
-            <span>📞 Support: +91-98765-43210</span>
+            {/* Updated Support Number */}
+            <span>📞 Support: +91-89260-26739</span>
           </div>
           <div className="flex gap-4">
             <span className="hover:text-white cursor-pointer">Counselling</span>
@@ -131,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
         </div>
 
         {/* Mobile Menu Dropdown - Hidden on Login Page */}
-        {isMobileMenuOpen && currentView !== 'login' && (
+        {isMobileMenuOpen && (currentView === 'home' || currentView === 'admin') && (
           <div className="md:hidden bg-white border-b border-slate-200 animate-fadeIn">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {user ? (
@@ -174,15 +176,13 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
                    </button>
                 </>
               ) : (
-                /* Hide Login button if already on login page */
-                currentView !== 'login' && (
+                /* Hide Login button if already on login page (although parent conditional already ensures we are not on login page) */
                   <button
                     onClick={() => { onLoginClick(); setIsMobileMenuOpen(false); }}
                     className="block w-full text-center px-3 py-3 rounded-md text-base font-medium text-white bg-slate-900 hover:bg-slate-800"
                   >
                     Admin Login
                   </button>
-                )
               )}
             </div>
           </div>

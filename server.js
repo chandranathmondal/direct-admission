@@ -20,7 +20,8 @@ const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY
 const SHEET_CONFIG = {
   COLLEGES: {
     title: 'Colleges',
-    headers: ['id', 'name', 'location', 'state', 'logoUrl', 'description', 'rating', 'ratingCount']
+    // Added 'phone' to headers
+    headers: ['id', 'name', 'location', 'state', 'logoUrl', 'description', 'rating', 'ratingCount', 'phone']
   },
   COURSES: {
     title: 'Courses',

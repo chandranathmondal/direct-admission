@@ -143,7 +143,8 @@ export const App: React.FC = () => {
         collegeName: college?.name || 'Unknown College',
         location: college?.location || 'Unknown',
         state: college?.state || 'Unknown',
-        logoUrl: college?.logoUrl
+        logoUrl: college?.logoUrl,
+        collegePhone: college?.phone
       };
     });
   }, [courses, colleges]);
@@ -517,7 +518,7 @@ export const App: React.FC = () => {
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
                         </button>
-                        {process.env.API_KEY && (
+                        {process.env.REACT_APP_GEMINI_API_KEY && (
                           <button 
                             onClick={() => handleAiSearch()}
                             className="p-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-full"
@@ -782,9 +783,8 @@ export const App: React.FC = () => {
            </div>
            <div>
               <h5 className="text-white font-bold mb-3 uppercase tracking-wider text-xs">Contact</h5>
-              <p>123 Education Lane, Knowledge Park III</p>
-              <p>Greater Noida, UP, 201306</p>
               <p className="mt-2 text-amber-500">contact@direct-admission.com</p>
+              <p className="mt-1">Phone: +91-89260-26739</p>
            </div>
         </div>
         <div className="text-center pt-8 border-t border-slate-800 text-xs">

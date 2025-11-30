@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useMemo } from 'react';
 import { Course, User, UserRole, College } from '../types';
 import { STATES_OF_INDIA } from '../constants';
@@ -412,6 +413,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {STATES_OF_INDIA.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1 font-serif">Contact Phone</label>
+                      <input
+                        type="tel"
+                        className="w-full p-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-slate-900 text-sm"
+                        placeholder="e.g. +91-9876543210"
+                        value={newCollege.phone || ''}
+                        onChange={(e) => setNewCollege({ ...newCollege, phone: e.target.value })}
+                      />
                     </div>
 
                     <div>

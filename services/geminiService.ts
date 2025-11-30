@@ -1,11 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 // Initialize the Gemini API client
-// Note: API Key is expected to be in process.env.API_KEY
+// Note: API Key is expected to be in process.env.REACT_APP_GEMINI_API_KEY
 const getAiClient = () => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn("API_KEY is not set. AI features will be disabled.");
+    console.warn("REACT_APP_GEMINI_API_KEY is not set. AI features will be disabled.");
     return null;
   }
   return new GoogleGenAI({ apiKey });
