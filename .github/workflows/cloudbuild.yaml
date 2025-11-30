@@ -1,0 +1,14 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t', 'gcr.io/$PROJECT_ID/direct-admission:$IMAGE_TAG',
+        '--build-arg', 'REACT_APP_GEMINI_API_KEY=${_REACT_APP_GEMINI_API_KEY}',
+        '--build-arg', 'REACT_APP_ADMIN_EMAIL=${_REACT_APP_ADMIN_EMAIL}',
+        '--build-arg', 'REACT_APP_GOOGLE_CLIENT_ID=${_REACT_APP_GOOGLE_CLIENT_ID}',
+        '.'
+      ]
+
+images:
+  - 'gcr.io/$PROJECT_ID/direct-admission:$IMAGE_TAG'
