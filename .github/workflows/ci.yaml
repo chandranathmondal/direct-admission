@@ -34,9 +34,9 @@ jobs:
           gcloud builds submit \
             --config cloudbuild.yaml \
             --substitutions _REACT_APP_GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}",\
-                            _REACT_APP_ADMIN_EMAIL="${{ vars.ADMIN_EMAIL }}",\
-                            _REACT_APP_GOOGLE_CLIENT_ID="${{ vars.GOOGLE_CLIENT_ID }}",\
-                            _IMAGE_TAG="${{ env.IMAGE_TAG }}"
+          _REACT_APP_ADMIN_EMAIL="${{ vars.ADMIN_EMAIL }}",\
+          _REACT_APP_GOOGLE_CLIENT_ID="${{ vars.GOOGLE_CLIENT_ID }}",\
+          _IMAGE_TAG="${{ env.IMAGE_TAG }}"
 
       - name: Deploy app
         run: |
