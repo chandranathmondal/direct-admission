@@ -1,4 +1,3 @@
-
 # Direct-Admission - India's College Finder 🎓
 
 A premier portal for direct college admissions and curriculum discovery across India. Features AI-powered search, comprehensive filtering, and administrative tools.
@@ -7,7 +6,8 @@ A premier portal for direct college admissions and curriculum discovery across I
 
 *   **Unified Search**: Search for Colleges and Courses simultaneously with text or voice.
     *   **Voice Search**: Click the microphone icon 🎙️ and speak.
-    *   **AI Search**: Click the sparkle icon ✨ to let AI interpret complex queries (e.g., "Best B.Tech colleges in Kolkata").
+    *   **AI Search**: Click the sparkle icon ✨ to let AI interpret complex queries.
+*   **Secure Authentication**: Real Google Sign-In (OAuth 2.0) for administrators.
 *   **Smart Filtering**: Filter by State, Type (Course/College), and Sort by Fees/Rating.
 *   **AI Insights**: Get instant summaries using Google Gemini AI.
 *   **Admin Dashboard**: Manage Colleges, Courses, and Users via a secure interface.
@@ -16,81 +16,74 @@ A premier portal for direct college admissions and curriculum discovery across I
 
 ---
 
-## 🛑 Pre-Go-Live Checklist (CRITICAL)
+## 🛑 Pre-Go-Live Checklist
 
-Before deploying to production, you must configure real authentication and secrets.
+### 1. 🔑 Generate Google OAuth Credentials
+To enable the "Sign in with Google" button:
 
-### 1. 🔒 Configure Authentication (Firebase Auth)
-The `Login.tsx` component needs a real Identity Provider. We recommend **Firebase Authentication**.
+1.  Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2.  Navigate to **APIs & Services** > **Credentials**.
+3.  Click **Create Credentials** > **OAuth client ID**.
+4.  Application Type: **Web application**.
+5.  **Authorized JavaScript origins**:
+    *   `http://localhost:3000` (for local testing)
+    *   `https://your-cloud-run-url.a.run.app` (your deployed URL)
+6.  Copy the **Client ID** (e.g., `123...apps.googleusercontent.com`).
+7.  Pass this as `REACT_APP_GOOGLE_CLIENT_ID`.
 
-1.  Go to [Firebase Console](https://console.firebase.google.com/) > Add Project.
-2.  Go to **Authentication** > **Sign-in method** > Enable **Google**.
-3.  Register your web app in Project Settings.
-4.  Install Firebase SDK: `npm install firebase`
-5.  Create a file `src/firebase.ts` with your config.
-6.  Update `src/components/Login.tsx`:
-    ```typescript
-    import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-    // ... inside component
-    const signIn = async () => {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(getAuth(), provider);
-      onLogin(result.user.email);
-    };
-    ```
+### 2. 🤖 Setup Service Account
+To enable database storage (Google Sheets):
 
-### 2. 🔑 Environment Variables Reference
+1.  Create a Service Account in IAM & Admin.
+2.  Download the JSON Key file.
+3.  Share your Google Sheet with the Service Account email (Editor access).
+4.  Copy the **Sheet ID** from your Google Sheet URL.
 
-You need two types of variables: **Frontend** (Embedded at build time) and **Backend** (Read at runtime).
+---
 
-#### Frontend Variables (React)
-*Must start with `REACT_APP_`*
+## 🔑 Environment Variables Reference
+
+#### Frontend Variables (React - Build Time)
+*These must be provided during the build process.*
 
 | Variable Name | Description | Required? |
 | :--- | :--- | :--- |
-| `REACT_APP_GEMINI_API_KEY` | Google Gemini API Key for AI Search & Insights. | Yes |
+| `REACT_APP_GEMINI_API_KEY` | Google Gemini API Key for AI Search. | Yes |
 | `REACT_APP_ADMIN_EMAIL` | Default Admin Email (e.g., `contact@direct-admission.com`). | Yes |
-| `REACT_APP_FIREBASE_API_KEY` | (If using Firebase) Firebase Config API Key. | No |
+| `REACT_APP_GOOGLE_CLIENT_ID` | OAuth 2.0 Client ID for Login. | Yes |
 
-#### Backend Variables (Node.js)
-*Read by `server.js` on the server*
+#### Backend Variables (Node.js - Runtime)
+*These must be provided to the running container.*
 
 | Variable Name | Description | Required? |
 | :--- | :--- | :--- |
-| `GOOGLE_SHEET_ID` | The ID of your Google Sheet database (string between `/d/` and `/edit`). | Yes |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | IAM Email of the Service Account (e.g., `sheet-bot@project.iam.gserviceaccount.com`). | Yes |
-| `GOOGLE_PRIVATE_KEY` | The Private Key block from the Service Account JSON. | Yes |
+| `GOOGLE_SHEET_ID` | The ID of your Google Sheet database. | Yes |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | IAM Email of the Service Account. | Yes |
+| `GOOGLE_PRIVATE_KEY` | The Private Key block from the JSON key file. | Yes |
 | `PORT` | Server Port (Default: 8080). | No |
 
 ---
 
 ## ☁️ Deployment Guide (Google Cloud Run)
 
-### Step 1: Prepare Google Cloud Project
-1.  **Create Project**: Go to [Google Cloud Console](https://console.cloud.google.com/).
-2.  **Enable APIs**: Enable "Cloud Run API", "Cloud Build API", and "Google Sheets API".
-3.  **Service Account**: 
-    *   Create a Service Account (`sheet-manager`).
-    *   Download the JSON Key.
-    *   **Important**: Share your Google Sheet with the Service Account's email address (Editor access).
-
-### Step 2: Build Container
-Since React environment variables are baked in at build time, you must pass them as `--build-arg`.
+### Step 1: Build Container
+Since React environment variables are baked in at build time, you must pass them using `--build-arg`.
 
 ```bash
 # Login
 gcloud auth login
 gcloud config set project [YOUR_PROJECT_ID]
 
-# Build Image (Inject Frontend Keys Here)
+# Build Image
 gcloud builds submit \
   --tag gcr.io/[YOUR_PROJECT_ID]/direct-admission \
-  --build-arg REACT_APP_GEMINI_API_KEY="[YOUR_REAL_API_KEY]" \
-  --build-arg REACT_APP_ADMIN_EMAIL="contact@direct-admission.com" \
+  --build-arg REACT_APP_GEMINI_API_KEY="[YOUR_AI_KEY]" \
+  --build-arg REACT_APP_ADMIN_EMAIL="[YOUR_EMAIL]" \
+  --build-arg REACT_APP_GOOGLE_CLIENT_ID="[YOUR_OAUTH_CLIENT_ID]" \
   .
 ```
 
-### Step 3: Deploy Service
+### Step 2: Deploy Service
 Inject Backend secrets at runtime using `--set-env-vars`.
 
 *Note: For `GOOGLE_PRIVATE_KEY`, ensure you include the full string with `\n` or use Google Secret Manager.*
@@ -120,7 +113,8 @@ gcloud run deploy direct-admission-app \
     ```env
     # Frontend
     REACT_APP_GEMINI_API_KEY=xyz...
-    REACT_APP_ADMIN_EMAIL=contact@direct-admission.com
+    REACT_APP_ADMIN_EMAIL=your-email@gmail.com
+    REACT_APP_GOOGLE_CLIENT_ID=123...apps.googleusercontent.com
     
     # Backend
     GOOGLE_SHEET_ID=abc...
@@ -131,18 +125,3 @@ gcloud run deploy direct-admission-app \
     ```bash
     npm start
     ```
-    *Note: `npm start` runs the backend server (`server.js`) which serves the React app.*
-
----
-
-## 📁 Data Structure
-
-The application automatically maps data to Columns in your Google Sheet.
-
-| Sheet Name | Columns (Headers) |
-| :--- | :--- |
-| **Colleges** | `id`, `name`, `location`, `state`, `logoUrl`, `description`, `rating`, `ratingCount`, `phone` |
-| **Courses** | `id`, `collegeId`, `courseName`, `fees`, `duration`, `description`, `rating`, `ratingCount` |
-| **Users** | `email`, `name`, `role`, `avatar` |
-
-*Note: The app expects these exact sheet names. If you delete the sheets, the server will recreate them on the next restart/sync.*
