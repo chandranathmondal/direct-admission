@@ -13,6 +13,10 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClick, onNavigate, currentView }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Normalize role to handle potential case issues from data source
+  const normalizedRole = user?.role ? user.role.toUpperCase() : null;
+  const isAdminOrEditor = normalizedRole === 'ADMIN' || normalizedRole === 'EDITOR';
+
   return (
     <div className="flex flex-col w-full">
       {/* Top Trust Bar */}
@@ -65,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
                     Home Page
                   </button>
                   
-                  {(user.role === 'ADMIN' || user.role === 'EDITOR') && (
+                  {isAdminOrEditor && (
                     <button 
                       onClick={() => onNavigate('admin')}
                       className={`px-3 py-2 rounded-md text-sm font-medium transition-colors font-sans ${currentView === 'admin' ? 'text-amber-700 bg-amber-50' : 'text-slate-600 hover:text-amber-700'}`}
@@ -159,7 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
                      Home Page
                    </button>
                    
-                   {(user.role === 'ADMIN' || user.role === 'EDITOR') && (
+                   {isAdminOrEditor && (
                     <button 
                       onClick={() => { onNavigate('admin'); setIsMobileMenuOpen(false); }}
                       className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${currentView === 'admin' ? 'bg-amber-50 text-amber-700' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'}`}
