@@ -3,6 +3,10 @@ const express = require('express');
 const path = require('path');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
+const { GoogleGenAI, Type } = require("@google/genai");
+
+// Load environment variables locally
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -16,6 +20,9 @@ const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY 
   ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n') 
   : null;
+
+// Gemini API Configuration
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const SHEET_CONFIG = {
   COLLEGES: {
@@ -37,6 +44,7 @@ const SHEET_CONFIG = {
 // AUTHENTICATION & SHEET SETUP
 // ============================================================================
 let doc = null;
+let aiClient = null;
 
 async function getDoc() {
   if (doc) return doc;
@@ -57,6 +65,16 @@ async function getDoc() {
   const newDoc = new GoogleSpreadsheet(GOOGLE_SHEET_ID, serviceAccountAuth);
   await newDoc.loadInfo();
   return newDoc;
+}
+
+function getAiClient() {
+  if (aiClient) return aiClient;
+  if (!GEMINI_API_KEY) {
+    console.warn("Missing GEMINI_API_KEY. AI features will be unavailable.");
+    return null;
+  }
+  aiClient = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+  return aiClient;
 }
 
 // ============================================================================
@@ -213,6 +231,93 @@ app.post('/api/save-users', async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: "Sync failed: " + err.message });
+  }
+});
+
+// --- AI PROXY ROUTES ---
+
+// Search Query Parsing
+app.post('/api/ai/search', async (req, res) => {
+  const { userQuery } = req.body;
+  const ai = getAiClient();
+  
+  if (!ai) return res.status(503).json({ error: "AI Service Unavailable" });
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Analyze this user query for college admissions in India: "${userQuery}".
+      
+      Extract search filters:
+      1. location: City or State. Fix typos (e.g. "Kolkatta" -> "Kolkata").
+      2. keyword: Specific degree, course, or specialization (e.g., "B.Tech", "Computer Science", "IT", "Bio Technology", "MBA"). 
+         - Do NOT generalize to broad topics (e.g. keep "Computer Science", don't convert to "Engineering").
+         - Fix typos (e.g. "Coputer Scence" -> "Computer Science").
+      
+      Return JSON: { "location": string | null, "keyword": string | null }
+      `,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            location: { type: Type.STRING, nullable: true },
+            keyword: { type: Type.STRING, nullable: true }
+          }
+        }
+      }
+    });
+
+    if (response.text) {
+      res.json(JSON.parse(response.text));
+    } else {
+      res.json(null);
+    }
+  } catch (error) {
+    console.error("Gemini Search Error:", error);
+    res.status(500).json({ error: "AI Error" });
+  }
+});
+
+// Course Insights
+app.post('/api/ai/course-insights', async (req, res) => {
+  const { courseName, collegeName, description } = req.body;
+  const ai = getAiClient();
+  
+  if (!ai) return res.status(503).json({ text: "AI insights unavailable." });
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Write a 2-sentence exciting summary about the ${courseName} program at ${collegeName}, India. 
+      Use the provided description for context: "${(description || '').substring(0, 1000)}...".
+      Focus on career prospects and unique selling points.`,
+    });
+    res.json({ text: response.text });
+  } catch (error) {
+    console.error("Gemini Course Insight Error:", error);
+    res.json({ text: "No insights available." });
+  }
+});
+
+// College Insights
+app.post('/api/ai/college-insights', async (req, res) => {
+  const { collegeName, location, description } = req.body;
+  const ai = getAiClient();
+  
+  if (!ai) return res.status(503).json({ text: "AI insights unavailable." });
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `Write a 2-sentence highlight summary about ${collegeName} located in ${location}.
+      Use the provided description for context: "${(description || '').substring(0, 1000)}...".
+      Focus on campus life, reputation, or infrastructure.`,
+    });
+    res.json({ text: response.text });
+  } catch (error) {
+    console.error("Gemini College Insight Error:", error);
+    res.json({ text: "No insights available." });
   }
 });
 

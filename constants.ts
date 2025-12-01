@@ -2,7 +2,7 @@
 import { Course, User, UserRole, College } from './types';
 
 // Read initial admin from Environment Variable
-export const INITIAL_ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL || "contact@direct-admission.com";
+export const INITIAL_ADMIN_EMAIL = process.env.REACT_APP_INITIAL_ADMIN_EMAIL || "contact@direct-admission.com";
 
 export const STATES_OF_INDIA = [
   "West Bengal"

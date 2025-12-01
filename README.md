@@ -1,3 +1,4 @@
+
 # Direct-Admission - India's College Finder 🎓
 
 A premier portal for direct college admissions and curriculum discovery across India. Features AI-powered search, comprehensive filtering, and administrative tools.
@@ -39,6 +40,13 @@ To enable database storage (Google Sheets):
 3.  Share your Google Sheet with the Service Account email (Editor access).
 4.  Copy the **Sheet ID** from your Google Sheet URL.
 
+### 3. ✨ Get Gemini API Key
+To enable AI search and summaries:
+
+1.  Go to [Google AI Studio](https://aistudio.google.com/).
+2.  Get an API Key.
+3.  This key will be passed to the **Backend Server** (it is safe from public view).
+
 ---
 
 ## 🔑 Environment Variables Reference
@@ -48,8 +56,7 @@ To enable database storage (Google Sheets):
 
 | Variable Name | Description | Required? |
 | :--- | :--- | :--- |
-| `REACT_APP_GEMINI_API_KEY` | Google Gemini API Key for AI Search. | Yes |
-| `REACT_APP_ADMIN_EMAIL` | Default Admin Email (e.g., `contact@direct-admission.com`). | Yes |
+| `REACT_APP_INITIAL_ADMIN_EMAIL` | **Seed Admin Email**. Used to bootstrap the first user if the database is empty. Once logged in, this admin can add other users via the dashboard. | Yes |
 | `REACT_APP_GOOGLE_CLIENT_ID` | OAuth 2.0 Client ID for Login. | Yes |
 
 #### Backend Variables (Node.js - Runtime)
@@ -57,6 +64,7 @@ To enable database storage (Google Sheets):
 
 | Variable Name | Description | Required? |
 | :--- | :--- | :--- |
+| `GEMINI_API_KEY` | Google Gemini API Key for AI features. | Yes |
 | `GOOGLE_SHEET_ID` | The ID of your Google Sheet database. | Yes |
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | IAM Email of the Service Account. | Yes |
 | `GOOGLE_PRIVATE_KEY` | The Private Key block from the JSON key file. | Yes |
@@ -77,8 +85,7 @@ gcloud config set project [YOUR_PROJECT_ID]
 # Build Image
 gcloud builds submit \
   --tag gcr.io/[YOUR_PROJECT_ID]/direct-admission \
-  --build-arg REACT_APP_GEMINI_API_KEY="[YOUR_AI_KEY]" \
-  --build-arg REACT_APP_ADMIN_EMAIL="[YOUR_EMAIL]" \
+  --build-arg REACT_APP_INITIAL_ADMIN_EMAIL="[YOUR_EMAIL]" \
   --build-arg REACT_APP_GOOGLE_CLIENT_ID="[YOUR_OAUTH_CLIENT_ID]" \
   .
 ```
@@ -95,6 +102,7 @@ gcloud run deploy direct-admission-app \
   --region us-central1 \
   --allow-unauthenticated \
   --memory 512Mi \
+  --set-env-vars GEMINI_API_KEY="[YOUR_GEMINI_KEY]" \
   --set-env-vars GOOGLE_SHEET_ID="[YOUR_SHEET_ID]" \
   --set-env-vars GOOGLE_SERVICE_ACCOUNT_EMAIL="[YOUR_SA_EMAIL]" \
   --set-env-vars GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n..."
@@ -112,11 +120,11 @@ gcloud run deploy direct-admission-app \
     Create a `.env` file in the root:
     ```env
     # Frontend
-    REACT_APP_GEMINI_API_KEY=xyz...
-    REACT_APP_ADMIN_EMAIL=your-email@gmail.com
+    REACT_APP_INITIAL_ADMIN_EMAIL=your-email@gmail.com
     REACT_APP_GOOGLE_CLIENT_ID=123...apps.googleusercontent.com
     
     # Backend
+    GEMINI_API_KEY=xyz...
     GOOGLE_SHEET_ID=abc...
     GOOGLE_SERVICE_ACCOUNT_EMAIL=bot@...
     GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n..."
