@@ -239,7 +239,7 @@ export const App: React.FC = () => {
       // Login.tsx calls onLogin -> App.tsx checks -> if fail, alerts.
       // To move alert to HTML, Login.tsx needs to know the result.
       // Let's modify the Login component to accept `users` list so it can validate BEFORE calling onLogin.
-      
+
       alert('Access Denied: You are not an authorized admin or editor user.');
     }
   };
@@ -502,7 +502,7 @@ export const App: React.FC = () => {
   // Since I can't restart the XML generation for `Login.tsx`, I will modify `handleLogin` here to NOT alert 
   // and instead set a state `loginErrorState` that `Login` could potentially use, 
   // OR just accept that the `alert` is the "Error Message" for now unless I pass `users` to `Login`.
-  
+
   // Correction: The `Login` component in XML above *does not* accept `users`.
   // I will revert to just updating `handleLogin` to keep existing logic but removing the `alert` 
   // would be wrong if `Login` doesn't know about it.
@@ -511,7 +511,7 @@ export const App: React.FC = () => {
   // The prompt asked for "If the user is not registered... show error message on same html".
   // This requires `Login.tsx` to know about users. 
   // I will update `App.tsx` to pass `users` to `Login` and I will update `Login.tsx` content in the XML to accept it.
-  
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar 
