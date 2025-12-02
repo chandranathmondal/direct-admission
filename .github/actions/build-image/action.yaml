@@ -31,9 +31,9 @@ runs:
 
     - name: Build Docker image
       shell: bash
-      run: docker build -t ${{ vars.DOCKER_REPO }}:${{ inputs.image-tag }} .
+      run: docker build -t ${{ env.DOCKER_REPO }}:${{ inputs.image-tag }} .
 
     - name: Set output
       id: set-output
       shell: bash
-      run: echo "image-path=${{ vars.DOCKER_REPO }}:${{ inputs.image-tag }}" >> "$GITHUB_OUTPUT"
+      run: echo "image-path=${{ env.DOCKER_REPO }}:${{ inputs.image-tag }}" >> "$GITHUB_OUTPUT"
