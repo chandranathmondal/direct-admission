@@ -22,6 +22,8 @@ jobs:
         id: build-image
         with:
           image-tag: ${{ env.IMAGE_TAG }}
+        env:
+          DOCKER_REPO: ${{ vars.DOCKER_REPO }}
 
       - name: Run container (background)
         run: |
