@@ -16,10 +16,13 @@ const PORT = process.env.PORT || 8080;
 // ============================================================================
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-// Handle newlines in private key if passed via string env var
-const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY 
-  ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n') 
-  : null;
+
+// Handle Private Key: Support both literal \n (escaped) and actual newlines
+let GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
+if (GOOGLE_PRIVATE_KEY) {
+  // If the key contains the literal characters '\n', replace them with real newlines
+  GOOGLE_PRIVATE_KEY = GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
+}
 
 // Gemini API Configuration
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
