@@ -28,7 +28,10 @@ jobs:
       - name: Run container (background)
         run: |
           docker run --name direct-admission -d -p 8080:8080 \
-            --env-file .env \
+            -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+            -e GOOGLE_SHEET_ID=${{ vars.GOOGLE_SHEET_ID }} \
+            -e GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }} \
+            -e GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} \
             ${{ steps.build-image.outputs.image-path }}
 
       - name: Wait for service

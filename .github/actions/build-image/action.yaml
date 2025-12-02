@@ -14,18 +14,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Generate tag (Git tag or commit SHA)
-      id: gen-sha
-      shell: bash
-      run: |
-        if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-          TAG="${GITHUB_REF_NAME}"
-        else
-          TAG=$(git rev-parse --short HEAD)
-        fi
-
-        echo "TAG=$TAG" >> $GITHUB_ENV
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
