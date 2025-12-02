@@ -18,7 +18,7 @@ jobs:
       - name: Generate tag (Commit short SHA)
         run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - uses: ./actions/build-image
+      - uses: ./workflows/actions/build-image
         id: build-image
         with:
           image-tag: ${{ env.IMAGE_TAG }}
