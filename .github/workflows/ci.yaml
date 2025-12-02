@@ -15,14 +15,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generate tag (Commit short SHA)
+        run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - uses: ./actions/build-image
         id: build-image
+        with:
+          image-tag: ${{ env.IMAGE_TAG }}
 
       - name: Run container (background)
         run: |
           docker run --name direct-admission -d -p 8080:8080 \
             --env-file .env \
-            ${{ steps.build-image.outputs.image-tag }}
+            ${{ steps.build-image.outputs.image-path }}
 
       - name: Wait for service
         run: |

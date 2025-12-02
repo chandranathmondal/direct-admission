@@ -1,10 +1,15 @@
 name: Build Docker Image
 description: Builds a Docker image with dynamic tag (git tag or commit sha).
 
-outputs:
+inputs:
   image-tag:
-    description: Full Docker image tag
-    value: ${{ steps.set-output.outputs.image-tag }}
+    description: Docker image tag
+    required: true
+
+outputs:
+  image-path:
+    description: Docker image path
+    value: ${{ steps.set-output.outputs.image-path }}
 
 runs:
   using: composite
@@ -26,9 +31,9 @@ runs:
 
     - name: Build Docker image
       shell: bash
-      run: docker build -t ${{ vars.DOCKER_REPO }}:${TAG} .
+      run: docker build -t ${{ vars.DOCKER_REPO }}:${{ inputs.image-tag }} .
 
     - name: Set output
       id: set-output
       shell: bash
-      run: echo "image-tag=${{ vars.DOCKER_REPO }}:${TAG}" >> "$GITHUB_OUTPUT"
+      run: echo "image-path=${{ vars.DOCKER_REPO }}:${{ inputs.image-tag }}" >> "$GITHUB_OUTPUT"
