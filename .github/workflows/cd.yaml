@@ -11,10 +11,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   continuous-delivery:
     runs-on: ubuntu-latest
@@ -74,8 +70,8 @@ jobs:
         if: steps.detect.outputs.skip != 'true'
         with:
           registry: ${{ vars.DOCKER_REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push image
         if: steps.detect.outputs.skip != 'true'
