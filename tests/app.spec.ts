@@ -30,7 +30,16 @@ test.describe('Direct-Admission App E2E', () => {
 
   test('should handle navigation back to home from login', async ({ page }) => {
     await page.getByRole('navigation').getByRole('button', { name: 'Admin Login' }).click();
-    await page.getByRole('button', { name: 'Home' }).click(); 
+    
+    // Once in Login page, the "Home" button is NOT labeled "Home". 
+    // The Navbar logo/title itself is a home link.
+    // Also, the "Admin Login" button disappears.
+    // In Navbar.tsx: 
+    // <div className="flex items-center cursor-pointer" onClick={() => onNavigate('home')}> ... Logo ... </div>
+    // This div is clickable but not a button role.
+    // Let's click the text "Direct-Admission" or "The Official Portal" to go home.
+    
+    await page.getByText('Direct-Admission').first().click();
     
     await expect(page.getByText('Secure Your Seat in')).toBeVisible();
   });

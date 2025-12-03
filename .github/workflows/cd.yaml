@@ -104,7 +104,7 @@ jobs:
             --region ${{ vars.REGION }} \
             --allow-unauthenticated \
             --memory ${{ vars.MEMORY }} \
-            --set-secret
+            --set-secrets GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
             --set-env-vars GOOGLE_SHEET_ID="${{ vars.GOOGLE_SHEET_ID }}" \
             --set-env-vars GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \
-            --set-env-vars GOOGLE_PRIVATE_KEY="${{ secrets.GCP_PROJECT_ID }}"
+            --set-secrets GOOGLE_PRIVATE_KEY="${{ secrets.GCP_PROJECT_ID }}"
