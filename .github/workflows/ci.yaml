@@ -54,7 +54,7 @@ jobs:
           # ensure root element exists
           grep -q '<div id="root"' /tmp/page.html
           # extract main script (assets/index-*.js) and request it
-          SCRIPT=$(grep -oE '/assets/index-[^"\']+\.js' /tmp/page.html | head -n1)
+          SCRIPT=$(grep -oE "/assets/index-[^\"']+\.js" /tmp/page.html | head -n1)
           if [ -z "$SCRIPT" ]; then
             echo "No client script found in HTML"; exit 2
           fi
