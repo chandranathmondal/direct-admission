@@ -60,22 +60,22 @@ jobs:
           fi
           curl -sSf http://localhost:8080$SCRIPT > /dev/null
 
-      # - name: Install Node and Playwright for E2E
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '18'
+      - name: Install Node and Playwright for E2E
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-      # - name: Install npm dependencies (include dev)
-      #   run: npm install
+      - name: Install npm dependencies (include dev)
+        run: npm install
 
-      # - name: Install Playwright browsers
-      #   run: npx playwright install --with-deps
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
-      # - name: Run Playwright E2E tests
-      #   run: npx playwright test --config=playwright.config.ts --reporter=list
+      - name: Run Playwright E2E tests
+        run: npx playwright test --config=playwright.config.ts --reporter=list
 
-      # - name: Teardown
-      #   if: always()
-      #   run: |
-      #     docker logs direct-admission-ci || true
-      #     docker rm -f direct-admission-ci || true
+      - name: Teardown
+        if: always()
+        run: |
+          docker logs direct-admission-ci || true
+          docker rm -f direct-admission-ci || true
