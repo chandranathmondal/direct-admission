@@ -9,7 +9,7 @@ ifneq (,$(wildcard .env))
 endif
 
 npm-install:
-	npm ci
+	npm install
 
 npm-build:
 	npm run build

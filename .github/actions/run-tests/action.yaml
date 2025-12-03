@@ -1,0 +1,73 @@
+name: Run tests
+description: Runs a Docker container and executes Playwright tests.
+
+inputs:
+  image-path:
+    description: Docker image path
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Run container (background)
+      shell: bash
+      run: |
+        docker run --name direct-admission -d -p 8080:8080 \
+          -e GEMINI_API_KEY="${{ env.GEMINI_API_KEY }}" \
+          -e GOOGLE_SHEET_ID="${{ env.GOOGLE_SHEET_ID }}" \
+          -e GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ env.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \
+          -e GOOGLE_PRIVATE_KEY="${{ env.GOOGLE_PRIVATE_KEY }}" \
+          ${{ inputs.image-path }}
+
+    - name: Wait for service
+      shell: bash
+      run: |
+        for i in {1..20}; do
+          if curl -sSf http://localhost:8080/ > /dev/null; then
+            echo "service up"; break
+          fi
+          sleep 3
+        done
+
+    - name: Smoke test /api/data
+      shell: bash
+      run: |
+        curl -sSf http://localhost:8080/api/data | jq . > /dev/null
+
+    - name: UI smoke test - ensure client bundle served
+      shell: bash
+      run: |
+        # fetch root html
+        curl -sS http://localhost:8080/ -o /tmp/page.html
+        # ensure root element exists
+        grep -q '<div id="root"' /tmp/page.html
+        # extract main script (assets/index-*.js) and request it
+        SCRIPT=$(grep -oE "/assets/index-[^\"']+\.js" /tmp/page.html | head -n1)
+        if [ -z "$SCRIPT" ]; then
+          echo "No client script found in HTML"; exit 2
+        fi
+        curl -sSf http://localhost:8080$SCRIPT > /dev/null
+
+    - name: Install Node and Playwright for E2E
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install npm dependencies (include dev)
+      shell: bash
+      run: npm install
+
+    - name: Install Playwright browsers
+      shell: bash
+      run: npx playwright install --with-deps
+
+    - name: Run Playwright E2E tests
+      shell: bash
+      run: npx playwright test --config=playwright.config.ts --reporter=list
+
+    - name: Teardown
+      if: always()
+      shell: bash
+      run: |
+        docker logs direct-admission || true
+        docker rm -f direct-admission || true
