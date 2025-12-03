@@ -103,7 +103,7 @@ jobs:
             --image ${{ needs.continuous-delivery.outputs.image-path }} \
             --platform managed \
             --region ${{ vars.REGION }} \
-            --allow-unauthenticated \
+            --no-invoker-iam-check \
             --memory ${{ vars.MEMORY }} \
             --update-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest \
             --set-env-vars GOOGLE_SHEET_ID="${{ vars.GOOGLE_SHEET_ID }}" \
