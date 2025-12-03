@@ -85,6 +85,7 @@ jobs:
     needs: cd
     runs-on: ubuntu-latest
     environment: ${{ needs.cd.outputs.environment }}
+    name: Deploy to ${{ needs.cd.outputs.environment }}
 
     steps:
       - uses: google-github-actions/setup-gcloud@v2
