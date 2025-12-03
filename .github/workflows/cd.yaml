@@ -52,7 +52,7 @@ jobs:
             fi
           fi
 
-      - uses: ./actions/build-image
+      - uses: ./.github/actions/build-image
         if: steps.detect.outputs.skip != 'true'
         id: build-image
         with:
