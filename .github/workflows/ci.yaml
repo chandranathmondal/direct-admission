@@ -9,6 +9,10 @@ on:
     branches:
       - release       # PR target branch must be "release"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
