@@ -10,6 +10,7 @@ runs:
   using: composite
   steps:
     - name: Run container (background)
+      shell: bash
       run: |
         docker run --name direct-admission -d -p 8080:8080 \
           -e GEMINI_API_KEY="${{ env.GEMINI_API_KEY }}" \
@@ -19,6 +20,7 @@ runs:
           ${{ inputs.image-path }}
 
     - name: Wait for service
+      shell: bash
       run: |
         for i in {1..20}; do
           if curl -sSf http://localhost:8080/ > /dev/null; then
@@ -28,10 +30,12 @@ runs:
         done
 
     - name: Smoke test /api/data
+      shell: bash
       run: |
         curl -sSf http://localhost:8080/api/data | jq . > /dev/null
 
     - name: UI smoke test - ensure client bundle served
+      shell: bash
       run: |
         # fetch root html
         curl -sS http://localhost:8080/ -o /tmp/page.html
@@ -50,16 +54,20 @@ runs:
         node-version: '18'
 
     - name: Install npm dependencies (include dev)
+      shell: bash
       run: npm install
 
     - name: Install Playwright browsers
+      shell: bash
       run: npx playwright install --with-deps
 
     - name: Run Playwright E2E tests
+      shell: bash
       run: npx playwright test --config=playwright.config.ts --reporter=list
 
     - name: Teardown
       if: always()
+      shell: bash
       run: |
         docker logs direct-admission || true
         docker rm -f direct-admission || true
