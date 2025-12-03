@@ -79,7 +79,7 @@ jobs:
 
       - name: Push image
         if: steps.detect.outputs.skip != 'true'
-        run: docker push ${{ steps.buil-image.outputs.image-path }}
+        run: docker push ${{ steps.build-image.outputs.image-path }}
 
   deploy:
     needs: cd
