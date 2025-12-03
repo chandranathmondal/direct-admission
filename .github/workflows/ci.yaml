@@ -28,10 +28,10 @@ jobs:
       - name: Run container (background)
         run: |
           docker run --name direct-admission -d -p 8080:8080 \
-            -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
-            -e GOOGLE_SHEET_ID=${{ vars.GOOGLE_SHEET_ID }} \
-            -e GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }} \
-            -e GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} \
+            -e GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
+            -e GOOGLE_SHEET_ID="${{ vars.GOOGLE_SHEET_ID }}" \
+            -e GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \
+            -e GOOGLE_PRIVATE_KEY="${{ secrets.GOOGLE_PRIVATE_KEY }}" \
             ${{ steps.build-image.outputs.image-path }}
 
       - name: Wait for service
@@ -47,18 +47,18 @@ jobs:
         run: |
           curl -sSf http://localhost:8080/api/data | jq . > /dev/null
 
-      # - name: UI smoke test - ensure client bundle served
-      #   run: |
-      #     # fetch root html
-      #     curl -sS http://localhost:8080/ -o /tmp/page.html
-      #     # ensure root element exists
-      #     grep -q '<div id="root"' /tmp/page.html
-      #     # extract main script (assets/index-*.js) and request it
-      #     SCRIPT=$(grep -oE '/assets/index-[^"\']+\.js' /tmp/page.html | head -n1)
-      #     if [ -z "$SCRIPT" ]; then
-      #       echo "No client script found in HTML"; exit 2
-      #     fi
-      #     curl -sSf http://localhost:8080$SCRIPT > /dev/null
+      - name: UI smoke test - ensure client bundle served
+        run: |
+          # fetch root html
+          curl -sS http://localhost:8080/ -o /tmp/page.html
+          # ensure root element exists
+          grep -q '<div id="root"' /tmp/page.html
+          # extract main script (assets/index-*.js) and request it
+          SCRIPT=$(grep -oE '/assets/index-[^"\']+\.js' /tmp/page.html | head -n1)
+          if [ -z "$SCRIPT" ]; then
+            echo "No client script found in HTML"; exit 2
+          fi
+          curl -sSf http://localhost:8080$SCRIPT > /dev/null
 
       # - name: Install Node and Playwright for E2E
       #   uses: actions/setup-node@v4

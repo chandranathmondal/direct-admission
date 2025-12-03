@@ -30,17 +30,20 @@ npm-dev:
 
 docker-build:
 	docker build \
-		--build-arg REACT_APP_INITIAL_ADMIN_EMAIL=$(REACT_APP_INITIAL_ADMIN_EMAIL) \
-		--build-arg REACT_APP_GOOGLE_CLIENT_ID=$(REACT_APP_GOOGLE_CLIENT_ID) \
+		--build-arg REACT_APP_INITIAL_ADMIN_EMAIL="$(REACT_APP_INITIAL_ADMIN_EMAIL)" \
+		--build-arg REACT_APP_GOOGLE_CLIENT_ID="$(REACT_APP_GOOGLE_CLIENT_ID)" \
 		-t direct-admission:local .
 
 docker-run:
-	docker run --name direct-admission -d -p 8080:8080 --env-file .env direct-admission:local \
-		-e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
-		-e GOOGLE_SHEET_ID=${{ vars.GOOGLE_SHEET_ID }} \
-		-e GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }} \
-		-e GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} \
+	docker run --name direct-admission --rm -d -p 8080:8080 \
+		-e GEMINI_API_KEY="$(GEMINI_API_KEY)" \
+		-e GOOGLE_SHEET_ID="$(GOOGLE_SHEET_ID)" \
+		-e GOOGLE_SERVICE_ACCOUNT_EMAIL="$(GOOGLE_SERVICE_ACCOUNT_EMAIL)" \
+		-e GOOGLE_PRIVATE_KEY="$(GOOGLE_PRIVATE_KEY)" \
 		direct-admission:local
+
+docker-stop:
+	docker stop direct-admission
 
 compose-up:
 	docker compose up --build -d

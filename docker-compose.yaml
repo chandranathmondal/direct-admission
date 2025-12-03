@@ -5,14 +5,17 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        REACT_APP_INITIAL_ADMIN_EMAIL: ${REACT_APP_INITIAL_ADMIN_EMAIL}
-        REACT_APP_GOOGLE_CLIENT_ID: ${REACT_APP_GOOGLE_CLIENT_ID}
+        REACT_APP_INITIAL_ADMIN_EMAIL: "${REACT_APP_INITIAL_ADMIN_EMAIL}"
+        REACT_APP_GOOGLE_CLIENT_ID: "${REACT_APP_GOOGLE_CLIENT_ID}"
     image: direct-admission:local
     ports:
       - "${PORT}:${PORT}"
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      GEMINI_API_KEY: "${GEMINI_API_KEY}"
+      GOOGLE_SHEET_ID: "${GOOGLE_SHEET_ID}"
+      GOOGLE_SERVICE_ACCOUNT_EMAIL: "${GOOGLE_SERVICE_ACCOUNT_EMAIL}"
+      GOOGLE_PRIVATE_KEY: "${GOOGLE_PRIVATE_KEY}"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
       interval: 30s
