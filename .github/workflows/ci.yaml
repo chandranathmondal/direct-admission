@@ -1,0 +1,81 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize   # triggered when new commits are pushed to PR
+    branches:
+      - release       # PR target branch must be "release"
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate tag (Commit short SHA)
+        run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - uses: ./.github/actions/build-image
+        id: build-image
+        with:
+          image-tag: ${{ env.IMAGE_TAG }}
+        env:
+          DOCKER_REPO: ${{ vars.DOCKER_REPO }}
+
+      - name: Run container (background)
+        run: |
+          docker run --name direct-admission -d -p 8080:8080 \
+            -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+            -e GOOGLE_SHEET_ID=${{ vars.GOOGLE_SHEET_ID }} \
+            -e GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }} \
+            -e GOOGLE_PRIVATE_KEY=${{ secrets.GOOGLE_PRIVATE_KEY }} \
+            ${{ steps.build-image.outputs.image-path }}
+
+      - name: Wait for service
+        run: |
+          for i in {1..20}; do
+            if curl -sSf http://localhost:8080/ > /dev/null; then
+              echo "service up"; break
+            fi
+            sleep 3
+          done
+
+      - name: Smoke test /api/data
+        run: |
+          curl -sSf http://localhost:8080/api/data | jq . > /dev/null
+
+      # - name: UI smoke test - ensure client bundle served
+      #   run: |
+      #     # fetch root html
+      #     curl -sS http://localhost:8080/ -o /tmp/page.html
+      #     # ensure root element exists
+      #     grep -q '<div id="root"' /tmp/page.html
+      #     # extract main script (assets/index-*.js) and request it
+      #     SCRIPT=$(grep -oE '/assets/index-[^"\']+\.js' /tmp/page.html | head -n1)
+      #     if [ -z "$SCRIPT" ]; then
+      #       echo "No client script found in HTML"; exit 2
+      #     fi
+      #     curl -sSf http://localhost:8080$SCRIPT > /dev/null
+
+      # - name: Install Node and Playwright for E2E
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '18'
+
+      # - name: Install npm dependencies (include dev)
+      #   run: npm install
+
+      # - name: Install Playwright browsers
+      #   run: npx playwright install --with-deps
+
+      # - name: Run Playwright E2E tests
+      #   run: npx playwright test --config=playwright.config.ts --reporter=list
+
+      # - name: Teardown
+      #   if: always()
+      #   run: |
+      #     docker logs direct-admission-ci || true
+      #     docker rm -f direct-admission-ci || true
