@@ -26,20 +26,26 @@ jobs:
       startsWith(github.ref, 'refs/heads/release') ||
       startsWith(github.ref, 'refs/tags/')
 
+    outputs:
+      environment: ${{ steps.detect.outputs.environment }}
+      image-path: ${{ steps.build-image.outputs.image-path }}
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0   # needed to detect branches containing tags
 
-      - name: Determine trigger type
+      - name: Determine trigger type and generate image tag
         id: detect
         run: |
           if [[ "${GITHUB_REF}" == refs/heads/release ]]; then
             echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+            echo "environment=stage" >> $GITHUB_OUTPUT
           else
             # Check if tag commit is on release branch
             if git branch --contains "${GITHUB_SHA}" | grep -q "release"; then
               echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            echo "environment=prod" >> $GITHUB_OUTPUT
             else
               echo "Tag is not from release branch. Skipping."
               echo "skip=true" >> $GITHUB_OUTPUT
@@ -51,6 +57,18 @@ jobs:
         id: build-image
         with:
           image-tag: ${{ env.IMAGE_TAG }}
+        env:
+          DOCKER_REPO: ${{ vars.DOCKER_REPO }}
+
+      - uses: ./.github/actions/run-tests
+        if: steps.detect.outputs.skip != 'true'
+        with:
+          image-path: ${{ steps.build-image.outputs.image-path }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_SHEET_ID: ${{ vars.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
 
       - uses: docker/login-action@v3
         if: steps.detect.outputs.skip != 'true'
@@ -62,3 +80,30 @@ jobs:
       - name: Push image
         if: steps.detect.outputs.skip != 'true'
         run: docker push ${{ steps.buil-image.outputs.image-path }}
+
+  deploy:
+    needs: cd
+    runs-on: ubuntu-latest
+    environment: ${{ needs.cd.outputs.environment }}
+
+    steps:
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Verify auth
+        run: gcloud auth list
+
+      - name: Deploy app
+        run: |
+          gcloud run deploy direct-admission${{ vars.suffix }} \
+            --image ${{ needs.ci.outputs.image-path }} \
+            --platform managed \
+            --region ${{ vars.REGION }} \
+            --allow-unauthenticated \
+            --memory ${{ vars.MEMORY }} \
+            --set-env-vars GOOGLE_SHEET_ID="${{ vars.GOOGLE_SHEET_ID }}" \
+            --set-env-vars GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \
+            --set-env-vars GOOGLE_PRIVATE_KEY="${{ secrets.GCP_PROJECT_ID }}"

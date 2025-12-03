@@ -21,17 +21,11 @@ test.describe('Direct-Admission App E2E', () => {
   });
 
   test('should navigate to login page', async ({ page }) => {
-    // There are two "Admin Login" buttons (one in Navbar, one in Footer). 
-    // We want the one in the Navbar (top), which is usually inside a <nav> or identified by 'navigation'.
-    // Or we can pick the first one which is usually the top one.
-    // Using nth(0) or chaining from a header container is safer.
-    // However, the user provided specific locators. 
-    // "aka getByRole('navigation').getByRole('button', { name: 'Admin Login' })"
-    
-    // Assuming Navbar is a 'navigation' region.
+    // Use the specific locator for the Navbar Admin Login button
     await page.getByRole('navigation').getByRole('button', { name: 'Admin Login' }).click();
     
-    await expect(page.getByText('Admin Portal Access')).toBeVisible();
+    // Check for the actual text present in Login.tsx
+    await expect(page.getByText('Admin Access')).toBeVisible();
   });
 
   test('should handle navigation back to home from login', async ({ page }) => {
