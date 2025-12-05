@@ -28,7 +28,6 @@ runs:
   using: composite
   steps:
     - uses: aws-actions/configure-aws-credentials@v5.1.1
-      shell: bash
       with:
         aws-region: ${{ env.REGION }}
         role-to-assume: ${{ env.GH_RUNNER_ROLE_ARN }}
