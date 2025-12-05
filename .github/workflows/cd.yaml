@@ -102,7 +102,7 @@ jobs:
           service-name: ${{ vars.SERVICE_NAME }}
           image-path: ${{ needs.continuous-delivery.outputs.image-path }}
           gemini-api-key-secret-name: ${{ vars.GEMINI_API_KEY_SECRET_NAME }}
-          google-sheet-id:${{ vars.GOOGLE_SHEET_ID }}
+          google-sheet-id: ${{ vars.GOOGLE_SHEET_ID }}
           google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           google-private-key-secret-name: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_NAME }}
         env:
