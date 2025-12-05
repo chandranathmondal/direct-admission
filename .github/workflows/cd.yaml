@@ -70,14 +70,14 @@ jobs:
       - name: Login to Amazon ECR
         if: |
           steps.detect.outputs.skip != 'true' &&
-          toUpper(vars.CLOUD) == 'AWS'
+          vars.CLOUD == 'AWS'
         run: aws ecr get-login-password --region ${{ vars.REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
 
       - name: Login to Docker registry
         uses: docker/login-action@v3
         if: |
           steps.detect.outputs.skip != 'true' &&
-          toUpper(vars.CLOUD) != 'AWS'
+          vars.CLOUD != 'AWS'
         with:
           registry: ${{ vars.DOCKER_REGISTRY }}
           username: ${{ vars.DOCKER_USERNAME }}
