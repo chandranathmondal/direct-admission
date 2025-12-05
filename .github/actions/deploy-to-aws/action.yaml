@@ -70,8 +70,8 @@ runs:
                   \"Port\": \"8080\",
                   \"RuntimeEnvironmentVariables\": [
                       {
-                        \"GOOGLE_SHEET_ID\": \"${{ env.GOOGLE_SHEET_ID }}\",
-                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ env.GOOGLE_SERVICE_ACCOUNT_EMAIL }}\"
+                        \"GOOGLE_SHEET_ID\": \"${{ inputs.google-sheet-id }}\",
+                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ inputs.google-service-account-email }}\"
                       }
                   ],
                   \"RuntimeEnvironmentSecrets\": [
@@ -111,8 +111,8 @@ runs:
                   \"Port\": \"8080\",
                   \"RuntimeEnvironmentVariables\": [
                       {
-                        \"GOOGLE_SHEET_ID\": \"${{ env.GOOGLE_SHEET_ID }}\",
-                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ env.GOOGLE_SERVICE_ACCOUNT_EMAIL }}\"
+                        \"GOOGLE_SHEET_ID\": \"${{ inputs.google-sheet-id }}\",
+                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ inputs.google-service-account-email }}\"
                       }
                   ],
                   \"RuntimeEnvironmentSecrets\": [
