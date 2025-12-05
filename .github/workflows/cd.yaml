@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: ./.github/actions/deploy-to-aws
-        if: toUpper(vars.CLOUD) == 'AWS'
+        if: vars.CLOUD == 'AWS'
         with:
           service-name: ${{ vars.SERVICE_NAME }}
           image-path: ${{ needs.continuous-delivery.outputs.image-path }}
@@ -112,7 +112,7 @@ jobs:
           MEMORY: ${{ vars.MEMORY }}
 
       - uses: ./.github/actions/deploy-to-gcp
-        if: toUpper(vars.CLOUD) == 'GCP'
+        if: vars.CLOUD == 'GCP'
         with:
           service-name: ${{ vars.SERVICE_NAME }}
           image-path: ${{ needs.continuous-delivery.outputs.image-path }}
