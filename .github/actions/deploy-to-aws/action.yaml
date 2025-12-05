@@ -10,8 +10,8 @@ inputs:
     description: Docker image path
     required: true
 
-  gemini-api-key-secret-name:
-    description: Gemini API Key secret name in Secrets Manager
+  gemini-api-key-secret-arn:
+    description: Gemini API Key secret ARN in Secrets Manager
     required: true
 
   google-sheet-id:
@@ -20,8 +20,8 @@ inputs:
   google-service-account-email:
     required: true
 
-  google-private-key-secret-name:
-    description: Google Private Key secret name in Secrets Manager for service account
+  google-private-key-secret-arn:
+    description: Google Private Key secret ARN in Secrets Manager for service account
     required: true
 
 runs:
@@ -36,6 +36,7 @@ runs:
     - name: Deploy app
       shell: bash
       run: |
+        # Deploy app
         # -----------------------------
         # CONFIGURATION
         # -----------------------------
@@ -66,7 +67,19 @@ runs:
                 \"ImageIdentifier\": \"${{ inputs.image-path }}\",
                 \"ImageRepositoryType\": \"ECR\",
                 \"ImageConfiguration\": {
-                  \"Port\": \"8080\"
+                  \"Port\": \"8080\",
+                  \"RuntimeEnvironmentVariables\": [
+                      {
+                        \"GOOGLE_SHEET_ID\": \"${{ env.GOOGLE_SHEET_ID }}\",
+                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ env.GOOGLE_SERVICE_ACCOUNT_EMAIL }}\"
+                      }
+                  ],
+                  \"RuntimeEnvironmentSecrets\": [
+                      {
+                        \"GEMINI_API_KEY\": \"${{ inputs.gemini-api-key-secret-arn }}\",
+                        \"GOOGLE_PRIVATE_KEY\": \"${{ inputs.google-private-key-secret-arn }}\"
+                      }
+                  ]
                 }
               },
               \"AuthenticationConfiguration\": {
@@ -95,7 +108,19 @@ runs:
                 \"ImageIdentifier\": \"${{ inputs.image-path }}\",
                 \"ImageRepositoryType\": \"ECR\",
                 \"ImageConfiguration\": {
-                  \"Port\": \"8080\"
+                  \"Port\": \"8080\",
+                  \"RuntimeEnvironmentVariables\": [
+                      {
+                        \"GOOGLE_SHEET_ID\": \"${{ env.GOOGLE_SHEET_ID }}\",
+                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ env.GOOGLE_SERVICE_ACCOUNT_EMAIL }}\"
+                      }
+                  ],
+                  \"RuntimeEnvironmentSecrets\": [
+                      {
+                        \"GEMINI_API_KEY\": \"${{ inputs.gemini-api-key-secret-arn }}\",
+                        \"GOOGLE_PRIVATE_KEY\": \"${{ inputs.google-private-key-secret-arn }}\"
+                      }
+                  ]
                 }
               },
               \"AuthenticationConfiguration\": {
