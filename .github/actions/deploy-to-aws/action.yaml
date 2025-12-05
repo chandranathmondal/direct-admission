@@ -27,29 +27,93 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v2
-      with:
-        credentials_json: ${{ env.GCP_SA_KEY }}
-
-    - name: Set up gcloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        project_id: ${{ env.GCP_PROJECT_ID }}
-
-    - name: Verify auth
+    - uses: aws-actions/configure-aws-credentials@v5.1.1
       shell: bash
-      run: gcloud auth list
+      with:
+        aws-region: ${{ env.REGION }}
+        role-to-assume: ${{ env.GH_RUNNER_ROLE_ARN }}
+        role-session-name: github-runner
 
     - name: Deploy app
       shell: bash
       run: |
-        gcloud run deploy ${{ inputs.app-name }} \
-          --image ${{ inputs.image-path }} \
-          --platform managed \
-          --region ${{ env.REGION }} \
-          --no-invoker-iam-check \
-          --memory ${{ env.MEMORY }} \
+        # -----------------------------
+        # CONFIGURATION
+        # -----------------------------
+        AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query 'Account' --output text)"
+        ECR_ACCESS_ROLE_ARN="arn:aws:iam::$AWS_ACCOUNT_ID:role/AppRunnerECRAccessRole"
+        INSTANCE_ROLE_ARN="arn:aws:iam::$AWS_ACCOUNT_ID:role/${{ env.APP_RUNNER_INSTANCE_ROLE_NAME }}"
+        PORT="8080"
+
+        # -----------------------------
+        # CHECK IF SERVICE EXISTS
+        # -----------------------------
+        echo "Checking if App Runner service '${{ inputs.service-name }}' exists..."
+
+        SERVICE_ARN=$(aws apprunner list-services \
+          --query "ServiceSummaryList[?ServiceName=='${{ inputs.service-name }}'].ServiceArn" \
+          --output text)
+
+        if [ "$SERVICE_ARN" == "None" ] || [ -z "$SERVICE_ARN" ]; then
+          echo "❌ Service does NOT exist. Creating a new one..."
+
+          # -----------------------------
+          # CREATE SERVICE
+          # -----------------------------
+          aws apprunner create-service \
+            --service-name "${{ inputs.service-name }}" \
+            --source-configuration "{
+              \"ImageRepository\": {
+                \"ImageIdentifier\": \"${{ inputs.image-path }}\",
+                \"ImageRepositoryType\": \"ECR\",
+                \"ImageConfiguration\": {
+                  \"Port\": \"8080\"
+                }
+              },
+              \"AuthenticationConfiguration\": {
+                \"AccessRoleArn\": \"$ECR_ACCESS_ROLE_ARN\"
+              }
+            }" \
+            --instance-configuration "{
+              \"Cpu\": \"${{ env.CPU }}\",
+              \"Memory\": \"${{ env.MEMORY }}\",
+              \"InstanceRoleArn\": \"$INSTANCE_ROLE_ARN\"
+            }"
+
+          echo "✅ Service created successfully."
+
+        else
+          echo "✅ Service exists: ${{ inputs.service-name }}"
+          echo "Updating it with new image: ${{ inputs.image-path }}"
+
+          # -----------------------------
+          # UPDATE SERVICE (change image identifier)
+          # -----------------------------
+          aws apprunner update-service \
+            --service-arn "$SERVICE_ARN" \
+            --source-configuration "{
+              \"ImageRepository\": {
+                \"ImageIdentifier\": \"${{ inputs.image-path }}\",
+                \"ImageRepositoryType\": \"ECR\",
+                \"ImageConfiguration\": {
+                  \"Port\": \"8080\"
+                }
+              },
+              \"AuthenticationConfiguration\": {
+                \"AccessRoleArn\": \"$ECR_ACCESS_ROLE_ARN\"
+              }
+            }" \
+            --instance-configuration "{
+              \"Cpu\": \"${{ env.CPU }}\",
+              \"Memory\": \"${{ env.MEMORY }}\",
+              \"InstanceRoleArn\": \"$INSTANCE_ROLE_ARN\"
+            }"
+
+          echo "🚀 Update triggered successfully."
+        fi
+
+
+        
           --update-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest \
           --set-env-vars GOOGLE_SHEET_ID="${{ env.GOOGLE_SHEET_ID }}" \
           --set-env-vars GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ env.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \

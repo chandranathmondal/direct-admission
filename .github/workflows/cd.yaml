@@ -39,7 +39,7 @@ jobs:
         id: detect
         run: |
           if [[ "${GITHUB_REF}" == refs/heads/release ]]; then
-            echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+            echo "IMAGE_TAG=stage-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
             echo "environment=stage" >> $GITHUB_OUTPUT
           else
             # Check if tag commit is on release branch
@@ -76,7 +76,7 @@ jobs:
           vars.CLOUD == 'AWS'
         with:
           aws-region: ${{ vars.REGION }}
-          role-to-assume: ${{ vars.AWS_ROLE }}
+          role-to-assume: ${{ vars.GH_RUNNER_ROLE_ARN }}
           role-session-name: github-runner
 
       - name: Login to Amazon ECR
@@ -118,9 +118,10 @@ jobs:
           google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           google-private-key-secret-name: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_NAME }}
         env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          GH_RUNNER_ROLE_ARN: ${{ vars.GH_RUNNER_ROLE_ARN }}
+          APP_RUNNER_INSTANCE_ROLE_NAME: ${{ vars.APP_RUNNER_INSTANCE_ROLE_NAME }}
           REGION: ${{ vars.REGION }}
+          CPU: ${{ vars.CPU }}
           MEMORY: ${{ vars.MEMORY }}
 
       - uses: ./.github/actions/deploy-to-gcp
