@@ -25,6 +25,7 @@ jobs:
 
     permissions:
       id-token: write
+      contents: read
 
     outputs:
       environment: ${{ steps.detect.outputs.environment }}
