@@ -105,6 +105,9 @@ jobs:
     environment: ${{ needs.continuous-delivery.outputs.environment }}
     name: continuous-deployment (${{ needs.continuous-delivery.outputs.environment }})
 
+    permissions:
+      id-token: write
+
     steps:
       - uses: actions/checkout@v4
 
