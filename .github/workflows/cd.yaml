@@ -14,6 +14,7 @@ concurrency:
 jobs:
   continuous-delivery:
     runs-on: ubuntu-latest
+    environment: dev
 
     # Run only if:
     # - push to release branch
@@ -66,8 +67,17 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
 
-      - uses: docker/login-action@v3
-        if: steps.detect.outputs.skip != 'true'
+      - name: Login to Amazon ECR
+        if: |
+          steps.detect.outputs.skip != 'true' &&
+          toUpper(vars.CLOUD) == 'AWS'
+        run: aws ecr get-login-password --region ${{ vars.REGION }} | docker login --username AWS --password-stdin ${{ vars.DOCKER_REGISTRY }}
+
+      - name: Login to Docker registry
+        uses: docker/login-action@v3
+        if: |
+          steps.detect.outputs.skip != 'true' &&
+          toUpper(vars.CLOUD) != 'AWS'
         with:
           registry: ${{ vars.DOCKER_REGISTRY }}
           username: ${{ vars.DOCKER_USERNAME }}
@@ -84,28 +94,34 @@ jobs:
     name: continuous-deployment (${{ needs.continuous-delivery.outputs.environment }})
 
     steps:
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/deploy-to-aws
+        if: toUpper(vars.CLOUD) == 'AWS'
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          service-name: ${{ vars.SERVICE_NAME }}
+          image-path: ${{ needs.continuous-delivery.outputs.image-path }}
+          gemini-api-key-secret-name: ${{ vars.GEMINI_API_KEY_SECRET_NAME }}
+          google-sheet-id:${{ vars.GOOGLE_SHEET_ID }}
+          google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          google-private-key-secret-name: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_NAME }}
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          REGION: ${{ vars.REGION }}
+          MEMORY: ${{ vars.MEMORY }}
 
-      - name: Set up gcloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+      - uses: ./.github/actions/deploy-to-gcp
+        if: toUpper(vars.CLOUD) == 'GCP'
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-
-      - name: Verify auth
-        run: gcloud auth list
-
-      - name: Deploy app
-        run: |
-          gcloud run deploy direct-admission${{ vars.suffix }} \
-            --image ${{ needs.continuous-delivery.outputs.image-path }} \
-            --platform managed \
-            --region ${{ vars.REGION }} \
-            --no-invoker-iam-check \
-            --memory ${{ vars.MEMORY }} \
-            --update-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest \
-            --set-env-vars GOOGLE_SHEET_ID="${{ vars.GOOGLE_SHEET_ID }}" \
-            --set-env-vars GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \
-            --update-secrets GOOGLE_PRIVATE_KEY=GOOGLE_PRIVATE_KEY:latest
+          service-name: ${{ vars.SERVICE_NAME }}
+          image-path: ${{ needs.continuous-delivery.outputs.image-path }}
+          gemini-api-key-secret-name: ${{ vars.GEMINI_API_KEY_SECRET_NAME }}
+          google-sheet-id:${{ vars.GOOGLE_SHEET_ID }}
+          google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          google-private-key-secret-name: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_NAME }}
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          REGION: ${{ vars.REGION }}
+          MEMORY: ${{ vars.MEMORY }}
