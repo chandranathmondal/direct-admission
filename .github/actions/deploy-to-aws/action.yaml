@@ -111,10 +111,3 @@ runs:
 
           echo "🚀 Update triggered successfully."
         fi
-
-
-        
-          --update-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest \
-          --set-env-vars GOOGLE_SHEET_ID="${{ env.GOOGLE_SHEET_ID }}" \
-          --set-env-vars GOOGLE_SERVICE_ACCOUNT_EMAIL="${{ env.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" \
-          --update-secrets GOOGLE_PRIVATE_KEY=GOOGLE_PRIVATE_KEY:latest
