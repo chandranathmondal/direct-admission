@@ -68,18 +68,14 @@ runs:
                 \"ImageRepositoryType\": \"ECR\",
                 \"ImageConfiguration\": {
                   \"Port\": \"8080\",
-                  \"RuntimeEnvironmentVariables\": [
-                      {
-                        \"GOOGLE_SHEET_ID\": \"${{ inputs.google-sheet-id }}\",
-                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ inputs.google-service-account-email }}\"
-                      }
-                  ],
-                  \"RuntimeEnvironmentSecrets\": [
-                      {
-                        \"GEMINI_API_KEY\": \"${{ inputs.gemini-api-key-secret-arn }}\",
-                        \"GOOGLE_PRIVATE_KEY\": \"${{ inputs.google-private-key-secret-arn }}\"
-                      }
-                  ]
+                  \"RuntimeEnvironmentVariables\": {
+                    \"GOOGLE_SHEET_ID\": \"${{ inputs.google-sheet-id }}\",
+                    \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ inputs.google-service-account-email }}\"
+                  },
+                  \"RuntimeEnvironmentSecrets\": {
+                    \"GEMINI_API_KEY\": \"${{ inputs.gemini-api-key-secret-arn }}\",
+                    \"GOOGLE_PRIVATE_KEY\": \"${{ inputs.google-private-key-secret-arn }}\"
+                  }
                 }
               },
               \"AuthenticationConfiguration\": {
@@ -109,18 +105,14 @@ runs:
                 \"ImageRepositoryType\": \"ECR\",
                 \"ImageConfiguration\": {
                   \"Port\": \"8080\",
-                  \"RuntimeEnvironmentVariables\": [
-                      {
-                        \"GOOGLE_SHEET_ID\": \"${{ inputs.google-sheet-id }}\",
-                        \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ inputs.google-service-account-email }}\"
-                      }
-                  ],
-                  \"RuntimeEnvironmentSecrets\": [
-                      {
-                        \"GEMINI_API_KEY\": \"${{ inputs.gemini-api-key-secret-arn }}\",
-                        \"GOOGLE_PRIVATE_KEY\": \"${{ inputs.google-private-key-secret-arn }}\"
-                      }
-                  ]
+                  \"RuntimeEnvironmentVariables\": {
+                    \"GOOGLE_SHEET_ID\": \"${{ inputs.google-sheet-id }}\",
+                    \"GOOGLE_SERVICE_ACCOUNT_EMAIL\": \"${{ inputs.google-service-account-email }}\"
+                  },
+                  \"RuntimeEnvironmentSecrets\": {
+                    \"GEMINI_API_KEY\": \"${{ inputs.gemini-api-key-secret-arn }}\",
+                    \"GOOGLE_PRIVATE_KEY\": \"${{ inputs.google-private-key-secret-arn }}\"
+                  }
                 }
               },
               \"AuthenticationConfiguration\": {
