@@ -45,6 +45,8 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE }}
           role-session-name: github-runner
 
+      - run: exit 1
+
       - name: Determine trigger type and generate image tag
         id: detect
         run: |
