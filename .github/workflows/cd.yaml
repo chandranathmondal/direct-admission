@@ -35,17 +35,6 @@ jobs:
         with:
           fetch-depth: 0   # needed to detect branches containing tags
 
-      - uses: aws-actions/configure-aws-credentials@v5.1.1
-        if: |
-          steps.detect.outputs.skip != 'true' &&
-          vars.CLOUD == 'AWS'
-        with:
-          aws-region: ${{ vars.REGION }}
-          role-to-assume: ${{ vars.AWS_ROLE }}
-          role-session-name: github-runner
-
-      - run: exit 1
-
       - name: Determine trigger type and generate image tag
         id: detect
         run: |
