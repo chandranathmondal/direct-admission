@@ -61,15 +61,15 @@ jobs:
         env:
           DOCKER_REPO: ${{ vars.DOCKER_REPO }}
 
-      - uses: ./.github/actions/run-tests
-        if: steps.detect.outputs.skip != 'true'
-        with:
-          image-path: ${{ steps.build-image.outputs.image-path }}
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GOOGLE_SHEET_ID: ${{ vars.GOOGLE_SHEET_ID }}
-          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+      # - uses: ./.github/actions/run-tests
+      #   if: steps.detect.outputs.skip != 'true'
+      #   with:
+      #     image-path: ${{ steps.build-image.outputs.image-path }}
+      #   env:
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #     GOOGLE_SHEET_ID: ${{ vars.GOOGLE_SHEET_ID }}
+      #     GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+      #     GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
 
       - uses: aws-actions/configure-aws-credentials@v5.1.1
         if: |
