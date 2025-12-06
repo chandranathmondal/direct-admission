@@ -17,8 +17,28 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # important for merging
 
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+      
+      - name: Fetch release branch
+        run: git fetch origin release
+
+      - name: Merge PR changes into release
+        run: |
+          # Make release branch the target of merge
+          git checkout -B release origin/release
+          git merge origin/main --no-commit --no-ff || {
+            echo "Merge conflict detected!";
+            exit 1;
+          }
+      
       - name: Generate tag (Commit short SHA)
         run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
@@ -39,4 +59,3 @@ jobs:
           GOOGLE_SHEET_ID: ${{ vars.GOOGLE_SHEET_ID }}
           GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
-
