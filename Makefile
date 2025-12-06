@@ -82,26 +82,20 @@ show-changes:
 	@echo ""
 	@echo "✅ Done. No changes made to your working copy."
 
-# Temporary merge into release and show diffstat
+# Perform an actual merge into release but do NOT create a commit
 merge-changes:
-	@git fetch origin
-	@echo "📌 Current branch: $(CURRENT_BRANCH)"
-	@echo "📌 Updating release..."
-	@git fetch origin release
-
-	@echo "🔄 Creating temporary merge test..."
-	@git checkout -B release-temp origin/release >/dev/null 2>&1
-
-	@echo "🔗 Merging $(CURRENT_BRANCH) → release-temp (no commit)..."
-	@git merge $(CURRENT_BRANCH) --no-commit --no-ff || true
-
-	@echo ""
-	@echo "📄 Showing diffstat (3-dot diff):"
-	@git diff --stat origin/release...$(CURRENT_BRANCH)
-
-	@echo ""
-	@echo "🧹 Cleaning up..."
-	@git merge --abort >/dev/null 2>&1 || true
-	@git checkout $(CURRENT_BRANCH) >/dev/null 2>&1
-	@git branch -D release-temp >/dev/null 2>&1 || true
-	@echo "✅ Done. Your working directory is unchanged."
+	@CURRENT_BRANCH=$$(git rev-parse --abbrev-ref HEAD); \
+	echo "📌 Merging $$CURRENT_BRANCH → release (NO COMMIT)"; \
+	git fetch origin; \
+	echo "🔄 Switching to release..."; \
+	git checkout release; \
+	git pull origin release; \
+	echo "🔗 Applying merge (no commit, no fast-forward)..."; \
+	git merge $$CURRENT_BRANCH --no-commit --no-ff || { \
+		echo ""; \
+		echo "❌ Merge conflicts detected. Resolve manually."; \
+		exit 1; \
+	}; \
+	echo ""; \
+	echo "✅ Merge applied to working tree."; \
+	echo "🛑 No commit created. Review changes before committing."
