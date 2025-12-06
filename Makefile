@@ -56,3 +56,44 @@ npm-e2e:
 
 npm-clean:
 	rm -rf node_modules build
+
+# Automatically detect current branch
+CURRENT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+
+# Temporary merge into release and show diffstat
+diffstat-into-release:
+	@git fetch origin
+	@echo "📌 Current branch: $(CURRENT_BRANCH)"
+	@echo "📌 Updating release..."
+	@git fetch origin release
+
+	@echo "🔄 Creating temporary merge test..."
+	@git checkout -B release-temp origin/release >/dev/null 2>&1
+
+	@echo "🔗 Merging $(CURRENT_BRANCH) → release-temp (no commit)..."
+	@git merge $(CURRENT_BRANCH) --no-commit --no-ff || true
+
+	@echo ""
+	@echo "📄 Showing diffstat (3-dot diff):"
+	@git diff --stat origin/release...$(CURRENT_BRANCH)
+
+	@echo ""
+	@echo "🧹 Cleaning up..."
+	@git merge --abort >/dev/null 2>&1 || true
+	@git checkout $(CURRENT_BRANCH) >/dev/null 2>&1
+	@git branch -D release-temp >/dev/null 2>&1 || true
+	@echo "✅ Done. Your working directory is unchanged."
+
+# Show PR-style 3-dot diff exactly like GitHub
+show-changes:
+	@git fetch origin
+	@echo "📌 Current branch: $(CURRENT_BRANCH)"
+	@echo "📌 Updating release..."
+	@git fetch origin release
+
+	@echo ""
+	@echo "📄 Showing PR-style diff (release...currentBranch):"
+	@git diff origin/release...$(CURRENT_BRANCH)
+
+	@echo ""
+	@echo "✅ Done. No changes made to your working copy."
