@@ -35,6 +35,11 @@ jobs:
         with:
           fetch-depth: 0   # needed to detect branches containing tags
 
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+      
       - name: Fetch full git data
         run: git fetch --all --tags
 
