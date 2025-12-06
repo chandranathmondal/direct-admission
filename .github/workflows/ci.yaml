@@ -22,6 +22,11 @@ jobs:
         with:
           fetch-depth: 0  # important for merging
 
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+      
       - name: Fetch release branch
         run: git fetch origin release
 
