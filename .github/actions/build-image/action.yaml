@@ -28,7 +28,7 @@ runs:
       run: |
         docker build \
           --build-arg REACT_APP_INITIAL_ADMIN_EMAIL="${{ inputs.react-app-initial-admin-email }}" \
-		      --build-arg REACT_APP_GOOGLE_CLIENT_ID="${{ inputs.react-app-google-client-id }}" \
+          --build-arg REACT_APP_GOOGLE_CLIENT_ID="${{ inputs.react-app-google-client-id }}" \
           -t ${{ env.DOCKER_REPO }}:${{ inputs.image-tag }} .
 
     - name: Set output
