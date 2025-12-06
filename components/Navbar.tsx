@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { User } from '../types';
 
@@ -82,8 +81,8 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
               
               {user ? (
                 <div className="flex items-center gap-3">
-                  <div className="flex flex-col items-end text-xs font-sans min-w-[100px]">
-                     <p className="font-semibold text-slate-800 text-left">{user.name}</p>
+                  <div className="flex flex-col items-center text-xs font-sans min-w-[100px]">
+                     <p className="font-semibold text-slate-800 text-center w-full">{user.name}</p>
                      <div className="flex items-center justify-between mt-0.5 w-full gap-2">
                         <p className="text-slate-500 text-[10px] uppercase tracking-wide">{user.role}</p>
                         <button 
