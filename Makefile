@@ -60,8 +60,30 @@ npm-clean:
 # Automatically detect current branch
 CURRENT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 
+# Show changed files only (PR-style 3-dot diff with --stat)
+change-summary:
+	@git fetch origin release
+	@echo "📌 Current branch: $(shell git rev-parse --abbrev-ref HEAD)"
+	@echo "📄 Showing changed files (3-dot diff):"
+	@git diff --stat origin/release...$(shell git rev-parse --abbrev-ref HEAD)
+	@echo "✅ Done."
+
+# Show PR-style 3-dot diff exactly like GitHub
+show-changes:
+	@git fetch origin
+	@echo "📌 Current branch: $(CURRENT_BRANCH)"
+	@echo "📌 Updating release..."
+	@git fetch origin release
+
+	@echo ""
+	@echo "📄 Showing PR-style diff (release...currentBranch):"
+	@git diff origin/release...$(CURRENT_BRANCH)
+
+	@echo ""
+	@echo "✅ Done. No changes made to your working copy."
+
 # Temporary merge into release and show diffstat
-diffstat-into-release:
+merge-changes:
 	@git fetch origin
 	@echo "📌 Current branch: $(CURRENT_BRANCH)"
 	@echo "📌 Updating release..."
@@ -83,17 +105,3 @@ diffstat-into-release:
 	@git checkout $(CURRENT_BRANCH) >/dev/null 2>&1
 	@git branch -D release-temp >/dev/null 2>&1 || true
 	@echo "✅ Done. Your working directory is unchanged."
-
-# Show PR-style 3-dot diff exactly like GitHub
-show-changes:
-	@git fetch origin
-	@echo "📌 Current branch: $(CURRENT_BRANCH)"
-	@echo "📌 Updating release..."
-	@git fetch origin release
-
-	@echo ""
-	@echo "📄 Showing PR-style diff (release...currentBranch):"
-	@git diff origin/release...$(CURRENT_BRANCH)
-
-	@echo ""
-	@echo "✅ Done. No changes made to your working copy."
