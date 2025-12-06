@@ -1,6 +1,6 @@
 # Makefile for common development tasks (Unix-like systems)
 
-.PHONY: npm-install npm-build npm-start npm-dev docker-build compose-up compose-down npm-e2e npm-clean
+.PHONY: npm-install npm-build npm-start npm-dev docker-build compose-up compose-down npm-e2e npm-clean change-summary show-changes merge-changes
 
 # Load variables from .env if it exists
 ifneq (,$(wildcard .env))
