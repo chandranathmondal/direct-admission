@@ -35,28 +35,57 @@ jobs:
         with:
           fetch-depth: 0   # needed to detect branches containing tags
 
+      - name: Fetch full git data
+        run: git fetch --all --tags
+
       - name: Determine trigger type and generate image tag
         id: detect
         run: |
-          if [[ "${GITHUB_REF}" == refs/heads/release ]]; then
-            echo "IMAGE_TAG=stage-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+
+          # -----------------------------
+          # Case 1: Pushed directly to release branch
+          # -----------------------------
+          if [[ "$GITHUB_REF" == "refs/heads/release" ]]; then
+            IMAGE_TAG="stage-$(git rev-parse --short HEAD)"
+            echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
             echo "environment=stage" >> $GITHUB_OUTPUT
-          else
-            # Check if tag commit is on release branch
-            if git branch --contains "${GITHUB_SHA}" | grep -q "release"; then
-              echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-            echo "environment=prod" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # -----------------------------
+          # Case 2: Tag push event
+          # Check if tag commit is on release branch
+          # -----------------------------
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+
+            # Check if origin/release contains the commit
+            if git branch -r --contains "$GITHUB_SHA" | grep -q "origin/release"; then
+              echo "IMAGE_TAG=$TAG_NAME" >> $GITHUB_ENV
+              echo "environment=prod" >> $GITHUB_OUTPUT
+              exit 0
             else
-              echo "Tag is not from release branch. Skipping."
+              echo "Tag commit is NOT on release branch → skipping"
               echo "skip=true" >> $GITHUB_OUTPUT
+              exit 0
             fi
           fi
+
+          # -----------------------------
+          # Unexpected case fallback
+          # -----------------------------
+          echo "Unknown trigger → skipping"
+          echo "skip=true" >> $GITHUB_OUTPUT
 
       - uses: ./.github/actions/build-image
         if: steps.detect.outputs.skip != 'true'
         id: build-image
         with:
           image-tag: ${{ env.IMAGE_TAG }}
+          react-app-initial-admin-email: ${{ vars.REACT_APP_INITIAL_ADMIN_EMAIL }}
+          react-app-google-client-id: ${{ vars.REACT_APP_GOOGLE_CLIENT_ID }}
         env:
           DOCKER_REPO: ${{ vars.DOCKER_REPO }}
 

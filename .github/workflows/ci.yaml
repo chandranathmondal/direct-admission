@@ -26,6 +26,8 @@ jobs:
         id: build-image
         with:
           image-tag: ${{ env.IMAGE_TAG }}
+          react-app-initial-admin-email: ${{ vars.REACT_APP_INITIAL_ADMIN_EMAIL }}
+          react-app-google-client-id: ${{ vars.REACT_APP_GOOGLE_CLIENT_ID }}
         env:
           DOCKER_REPO: ${{ vars.DOCKER_REPO }}
 
