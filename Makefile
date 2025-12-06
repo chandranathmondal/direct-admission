@@ -1,6 +1,6 @@
 # Makefile for common development tasks (Unix-like systems)
 
-.PHONY: npm-install npm-build npm-start npm-dev docker-build compose-up compose-down npm-e2e npm-clean
+.PHONY: npm-install npm-build npm-start npm-dev docker-build compose-up compose-down npm-e2e npm-clean change-summary show-changes merge-changes
 
 # Load variables from .env if it exists
 ifneq (,$(wildcard .env))
@@ -56,3 +56,46 @@ npm-e2e:
 
 npm-clean:
 	rm -rf node_modules build
+
+# Automatically detect current branch
+CURRENT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+
+# Show changed files only (PR-style 3-dot diff with --stat)
+change-summary:
+	@git fetch origin release
+	@echo "📌 Current branch: $(shell git rev-parse --abbrev-ref HEAD)"
+	@echo "📄 Showing changed files (3-dot diff):"
+	@git diff --stat origin/release...$(shell git rev-parse --abbrev-ref HEAD)
+	@echo "✅ Done."
+
+# Show PR-style 3-dot diff exactly like GitHub
+show-changes:
+	@git fetch origin
+	@echo "📌 Current branch: $(CURRENT_BRANCH)"
+	@echo "📌 Updating release..."
+	@git fetch origin release
+
+	@echo ""
+	@echo "📄 Showing PR-style diff (release...currentBranch):"
+	@git diff origin/release...$(CURRENT_BRANCH)
+
+	@echo ""
+	@echo "✅ Done. No changes made to your working copy."
+
+# Perform an actual merge into release but do NOT create a commit
+merge-changes:
+	@CURRENT_BRANCH=$$(git rev-parse --abbrev-ref HEAD); \
+	echo "📌 Merging $$CURRENT_BRANCH → release (NO COMMIT)"; \
+	git fetch origin; \
+	echo "🔄 Switching to release..."; \
+	git checkout release; \
+	git pull origin release; \
+	echo "🔗 Applying merge (no commit, no fast-forward)..."; \
+	git merge $$CURRENT_BRANCH --no-commit --no-ff || { \
+		echo ""; \
+		echo "❌ Merge conflicts detected. Resolve manually."; \
+		exit 1; \
+	}; \
+	echo ""; \
+	echo "✅ Merge applied to working tree."; \
+	echo "🛑 No commit created. Review changes before committing."
