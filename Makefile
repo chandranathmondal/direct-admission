@@ -57,45 +57,48 @@ npm-e2e:
 npm-clean:
 	rm -rf node_modules build
 
-# Automatically detect current branch
-CURRENT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+# Default source branch if none provided
+BRANCH ?= main
+
+# Internal helper: ensure we are on release branch
+check-release-branch:
+	@if [ "$$(git rev-parse --abbrev-ref HEAD)" != "release" ]; then \
+		echo "❌ ERROR: You must run this from the 'release' branch."; \
+		echo "👉 Run: git checkout release"; \
+		exit 1; \
+	fi
+
+# Internal helper: Ensure release is clean and up to date
+prepare: check-release-branch
+	git fetch origin
+	@if ! git diff --quiet || ! git diff --cached --quiet; then \
+		echo "❌ ERROR: Working directory is dirty. Commit or stash changes first."; \
+		exit 1; \
+	fi
+	git reset --hard origin/release
 
 # Show changed files only (PR-style 3-dot diff with --stat)
-change-summary:
-	@git fetch origin release
-	@echo "📌 Current branch: $(shell git rev-parse --abbrev-ref HEAD)"
+change-summary: prepare
 	@echo "📄 Showing changed files (3-dot diff):"
-	@git diff --stat origin/release...$(shell git rev-parse --abbrev-ref HEAD)
+	git diff --stat origin/release...origin/$(BRANCH)
+	@echo ""
 	@echo "✅ Done."
 
 # Show PR-style 3-dot diff exactly like GitHub
-show-changes:
-	@git fetch origin
-	@echo "📌 Current branch: $(CURRENT_BRANCH)"
-	@echo "📌 Updating release..."
-	@git fetch origin release
-
+show-changes: prepare
+	@echo "📄 Showing PR-style diff:"
+	git diff origin/release...origin/$(BRANCH)
 	@echo ""
-	@echo "📄 Showing PR-style diff (release...currentBranch):"
-	@git diff origin/release...$(CURRENT_BRANCH)
-
-	@echo ""
-	@echo "✅ Done. No changes made to your working copy."
+	@echo "✅ Done."
 
 # Perform an actual merge into release but do NOT create a commit
-merge-changes:
-	@CURRENT_BRANCH=$$(git rev-parse --abbrev-ref HEAD); \
-	echo "📌 Merging $$CURRENT_BRANCH → release (NO COMMIT)"; \
-	git fetch origin; \
-	echo "🔄 Switching to release..."; \
-	git checkout release; \
-	git pull origin release; \
-	echo "🔗 Applying merge (no commit, no fast-forward)..."; \
-	git merge $$CURRENT_BRANCH --no-commit --no-ff || { \
+merge-changes: prepare
+	@echo "📌 Merging $$BRANCH → release (NO COMMIT)"; \
+	git merge origin/$(BRANCH) --no-commit --no-ff || { \
 		echo ""; \
 		echo "❌ Merge conflicts detected. Resolve manually."; \
 		exit 1; \
 	}; \
-	echo ""; \
-	echo "✅ Merge applied to working tree."; \
-	echo "🛑 No commit created. Review changes before committing."
+	@echo ""; \
+	@echo "✅ Merge applied to working tree."; \
+	@echo "🛑 No commit created. Review changes before committing."
