@@ -218,29 +218,37 @@ export const App: React.FC = () => {
   }, [enrichedCourses, colleges, searchTerm, aiKeyword, filterLocation, resultTypeFilter, sortBy]);
 
   // Auth Handlers
-  const handleLogin = (email: string) => {
-    const normalizedEmail = email.toLowerCase().trim();
-    const existingUser = users.find(u => u.email.toLowerCase() === normalizedEmail);
-    if (existingUser) {
-      setUser(existingUser);
-      if (existingUser.role === UserRole.ADMIN || existingUser.role === UserRole.EDITOR) {
-        setView('admin');
-      } else {
-        setView('home');
-      }
-    } else {
-      // Show Alert for now, but also passing user list to Login could be better for inline error.
-      // However, to fix the requirement "Update this so that the error message is shown on the same html",
-      // we need to pass a callback or property to Login.tsx.
-      // Since Login component in this XML block has been updated to handle its own error state,
-      // we just need to ensure we communicate the failure. 
-      // But `handleLogin` is passed `onLogin` which is void.
-      // The cleanest way with current props: 
-      // Login.tsx calls onLogin -> App.tsx checks -> if fail, alerts.
-      // To move alert to HTML, Login.tsx needs to know the result.
-      // Let's modify the Login component to accept `users` list so it can validate BEFORE calling onLogin.
+  const handleLogin = async (token: string) => {
+    try {
+      const response = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
 
-      alert('Access Denied: You are not an authorized admin or editor user.');
+      if (response.ok) {
+        const { user } = await response.json();
+        if (user) {
+          setUser(user);
+          if (user.role === UserRole.ADMIN || user.role === UserRole.EDITOR) {
+            setView('admin');
+          } else {
+            setView('home');
+          }
+          // After successful login, refresh the user data
+          fetchAllData();
+        } else {
+          setLoginErrorState('Login failed: Invalid user data received from server.');
+        }
+      } else {
+        const errorData = await response.json();
+        setLoginErrorState(errorData.error || 'An unknown error occurred during login.');
+      }
+    } catch (error) {
+      console.error('Login request failed:', error);
+      setLoginErrorState('Failed to connect to the server for login.');
     }
   };
   
@@ -747,7 +755,7 @@ export const App: React.FC = () => {
           // but I'm skipping changing Login interface to avoid conflict.
           // Login.tsx above handles its own "No Email" error.
           // App.tsx handles "Access Denied".
-          <Login onLogin={handleLogin} />
+          <Login onLogin={handleLogin} loginError={loginErrorState} />
         )}
 
         {view === 'admin' && user && (

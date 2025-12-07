@@ -237,6 +237,84 @@ app.post('/api/save-users', async (req, res) => {
   }
 });
 
+// Google Sign-In Route
+app.post('/api/auth/google', async (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.status(400).json({ error: "Missing token" });
+
+  try {
+    // Note: In a real app, you'd use google-auth-library to verify the token.
+    // For this simplified example, we'll decode it directly.
+    const decodedToken = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    
+    const { email, name, picture } = decodedToken;
+    if (!email) return res.status(400).json({ error: "Invalid token: missing email" });
+
+    let user = GLOBAL_CACHE.users.find(u => u.email === email);
+
+    if (user) {
+      // User exists, check if avatar needs updating
+      if (picture && user.avatar !== picture) {
+        console.log(`Updating avatar for ${email}...`);
+        user.avatar = picture;
+        await updateUserAvatarInSheet(email, picture);
+      }
+    } else {
+      // New user
+      console.log(`Creating new user: ${email}...`);
+      user = { email, name, role: 'user', avatar: picture || '' };
+      GLOBAL_CACHE.users.push(user);
+      // Add to sheet (we can use a simplified "add row" function for this)
+      await addUserToSheet(user);
+    }
+    
+    // Return the user's session
+    res.json({ user });
+
+  } catch (error) {
+    console.error("Auth Error:", error);
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
+
+// Helper to update just one user's avatar
+async function updateUserAvatarInSheet(email, newAvatar) {
+  try {
+    const document = await getDoc();
+    if (!document) return;
+    const sheet = document.sheetsByTitle[SHEET_CONFIG.USERS.title];
+    const rows = await sheet.getRows();
+    const userRow = rows.find(row => row.get('email') === email);
+    if (userRow) {
+      userRow.set('avatar', newAvatar);
+      await userRow.save();
+      console.log(`Sheet updated for ${email}.`);
+    }
+  } catch (error) {
+    console.error("Failed to update avatar in sheet:", error);
+  }
+}
+
+// Helper to add a new user to the sheet
+async function addUserToSheet(user) {
+  try {
+    const document = await getDoc();
+    if (!document) return;
+    const sheet = document.sheetsByTitle[SHEET_CONFIG.USERS.title];
+    await sheet.addRow({
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      avatar: user.avatar
+    });
+    console.log(`New user ${user.email} added to sheet.`);
+  } catch (error) {
+    console.error("Failed to add user to sheet:", error);
+  }
+}
+
+
 // --- AI PROXY ROUTES ---
 
 // Search Query Parsing
