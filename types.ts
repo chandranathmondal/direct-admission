@@ -32,9 +32,9 @@ export interface EnrichedCourse extends Course {
 }
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  VIEWER = 'VIEWER',
-  EDITOR = 'EDITOR'
+  ADMIN = 'Admin',
+  VIEWER = 'Viewer',
+  EDITOR = 'Editor'
 }
 
 export interface User {

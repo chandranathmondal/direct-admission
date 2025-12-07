@@ -221,9 +221,9 @@ export const CourseModal: React.FC<CourseModalProps> = ({
         <div className="p-4 border-t border-slate-200 bg-white flex justify-center shrink-0">
           <a 
             href={`tel:${collegeData.phone || '+918926026739'}`}
-            className="px-8 py-3 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white rounded-lg font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-lg transform hover:-translate-y-0.5"
+            className="px-8 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-lg transform hover:-translate-y-0.5"
           >
-            <span>📞</span> Book Your Seat
+            <span>📞</span> {currentView === 'college' ? 'Connect With College' : 'Book Your Seat'}
           </a>
         </div>
       </div>
