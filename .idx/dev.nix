@@ -13,15 +13,12 @@
       web = {
         command = [
           "npm"
-          "run"
-          "dev"
-          "--"
-          "--port"
-          "$PORT"
-          "--host"
-          "0.0.0.0"
+          "start"
         ];
         manager = "web";
+        env = {
+          PORT = "$PORT";
+        };
       };
     };
   };
