@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
                 <>
                   <button 
                     onClick={() => onNavigate('home')}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors font-sans ${currentView === 'home' ? 'text-amber-700 bg-amber-50' : 'text-slate-600 hover:text-amber-700'}`}
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors font-sans ${currentView === 'home' ? 'bg-slate-900 text-amber-400 shadow-md' : 'text-slate-600 hover:text-amber-700'}`}
                   >
                     Home Page
                   </button>
@@ -71,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
                   {isAdminOrEditor && (
                     <button 
                       onClick={() => onNavigate('admin')}
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors font-sans ${currentView === 'admin' ? 'text-amber-700 bg-amber-50' : 'text-slate-600 hover:text-amber-700'}`}
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors font-sans ${currentView === 'admin' ? 'bg-slate-900 text-amber-400 shadow-md' : 'text-slate-600 hover:text-amber-700'}`}
                     >
                       Dashboard
                     </button>
@@ -157,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
 
                    <button 
                     onClick={() => { onNavigate('home'); setIsMobileMenuOpen(false); }}
-                    className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${currentView === 'home' ? 'bg-amber-50 text-amber-700' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'}`}
+                    className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${currentView === 'home' ? 'bg-slate-900 text-amber-400' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'}`}
                    >
                      Home Page
                    </button>
@@ -165,7 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
                    {isAdminOrEditor && (
                     <button 
                       onClick={() => { onNavigate('admin'); setIsMobileMenuOpen(false); }}
-                      className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${currentView === 'admin' ? 'bg-amber-50 text-amber-700' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'}`}
+                      className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium ${currentView === 'admin' ? 'bg-slate-900 text-amber-400' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'}`}
                     >
                       Dashboard
                     </button>
