@@ -11,10 +11,10 @@ endif
 npm-install:
 	npm install
 
-npm-build:
+npm-build: npm-install
 	npm run build
 
-npm-start: build
+npm-start: npm-build
 	node server.js
 
 dev-frontend:
