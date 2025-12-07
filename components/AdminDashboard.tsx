@@ -145,8 +145,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         onAddCollege({
           ...newCollege,
           id: 'col_' + Date.now(),
-          rating: 0,
-          ratingCount: 0,
           description: newCollege.description || ''
         } as College);
       }
@@ -191,8 +189,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         onAddCourse({
           ...newCourse,
           id: Date.now().toString(),
-          rating: 0,
-          ratingCount: 0,
           duration: newCourse.duration || '4 Years',
           description: newCourse.description || ''
         } as Course);

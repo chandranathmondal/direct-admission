@@ -8,6 +8,11 @@ declare const describe: any;
 declare const test: any;
 declare const expect: any;
 
+// Mock Gemini Service
+jest.mock('../services/geminiService', () => ({
+  getCourseInsights: jest.fn().mockResolvedValue("Mock AI Insight")
+}));
+
 describe('CourseCard Component', () => {
   const mockCourse: EnrichedCourse = {
     id: '1',
@@ -16,22 +21,18 @@ describe('CourseCard Component', () => {
     fees: 500000,
     duration: '4 Years',
     description: 'A great course',
-    rating: 4.5,
-    ratingCount: 10,
     collegeName: 'Test College',
     location: 'Mumbai',
     state: 'Maharashtra',
     logoUrl: 'logo.png'
   };
 
-  const mockRate = jest.fn();
   const mockClick = jest.fn();
 
   test('renders course details correctly', () => {
     render(
       <CourseCard 
         course={mockCourse} 
-        onRate={mockRate}
         onClick={mockClick}
       />
     );
@@ -47,7 +48,6 @@ describe('CourseCard Component', () => {
     render(
       <CourseCard 
         course={mockCourse} 
-        onRate={mockRate}
         onClick={mockClick}
       />
     );
@@ -60,7 +60,6 @@ describe('CourseCard Component', () => {
       render(
       <CourseCard 
         course={mockCourse} 
-        onRate={mockRate}
         onClick={mockClick}
       />
     );

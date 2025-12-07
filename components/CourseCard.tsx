@@ -1,16 +1,14 @@
+
 import React, { useState } from 'react';
 import { EnrichedCourse } from '../types';
 import { getCourseInsights } from '../services/geminiService';
-import { StarRating } from './StarRating';
 
 interface CourseCardProps {
   course: EnrichedCourse;
   onClick?: (course: EnrichedCourse) => void;
-  onRate: (newRating: number) => void;
-  isRated?: boolean;
 }
 
-export const CourseCard: React.FC<CourseCardProps> = ({ course, onClick, onRate, isRated = false }) => {
+export const CourseCard: React.FC<CourseCardProps> = ({ course, onClick }) => {
   const [insight, setInsight] = useState<string | null>(null);
   const [loadingInsight, setLoadingInsight] = useState(false);
 
@@ -59,15 +57,6 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onClick, onRate,
                <div className="flex items-center justify-between mt-1">
                   <div className="flex items-center gap-2 text-xs text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
                     <span className="font-semibold">Duration:</span> {course.duration}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <StarRating 
-                      rating={course.rating || 0} 
-                      count={course.ratingCount || 0} 
-                      onRate={onRate}
-                      size="sm"
-                      readonly={isRated}
-                    />
                   </div>
                </div>
             </div>

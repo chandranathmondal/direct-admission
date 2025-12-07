@@ -10,8 +10,6 @@ interface CourseModalProps {
   collegeData: College;
   collegeCourses: EnrichedCourse[];
   onClose: () => void;
-  onRateCourse?: (courseId: string, rating: number) => void;
-  ratedItemIds?: string[];
 }
 
 export const CourseModal: React.FC<CourseModalProps> = ({ 
@@ -19,9 +17,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
   selectedCourse, 
   collegeData, 
   collegeCourses, 
-  onClose,
-  onRateCourse,
-  ratedItemIds = []
+  onClose
 }) => {
   const [currentView, setCurrentView] = useState<'college' | 'course'>(initialView);
   const [activeCourse, setActiveCourse] = useState<EnrichedCourse | null>(selectedCourse || null);
@@ -148,8 +144,6 @@ export const CourseModal: React.FC<CourseModalProps> = ({
                         <CourseCard 
                           course={course} 
                           onClick={() => handleCourseClickFromList(course)}
-                          onRate={(val) => onRateCourse && onRateCourse(course.id, val)}
-                          isRated={ratedItemIds.includes(course.id)}
                         />
                       </div>
                     ))}

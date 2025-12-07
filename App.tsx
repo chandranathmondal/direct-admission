@@ -23,9 +23,6 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
-  // Rating Persistence State
-  const [ratedItemIds, setRatedItemIds] = useState<string[]>([]);
-
   // Filter State
   const [searchTerm, setSearchTerm] = useState('');
   const [aiKeyword, setAiKeyword] = useState<string | null>(null); // Store AI-extracted keyword separately
@@ -35,7 +32,7 @@ export const App: React.FC = () => {
 
   // New Result Filters
   const [resultTypeFilter, setResultTypeFilter] = useState<'all' | 'courses' | 'colleges'>('all');
-  const [sortBy, setSortBy] = useState<'rating' | 'fees_low' | 'fees_high'>('rating');
+  const [sortBy, setSortBy] = useState<'fees_low' | 'fees_high'>('fees_low');
 
   // Modal State
   const [modalState, setModalState] = useState<{
@@ -76,12 +73,6 @@ export const App: React.FC = () => {
   useEffect(() => {
     fetchAllData();
     
-    // Load rated items from local storage
-    const storedRatedItems = localStorage.getItem('directAdmission_ratedItems');
-    if (storedRatedItems) {
-      setRatedItemIds(JSON.parse(storedRatedItems));
-    }
-
     const intervalId = setInterval(() => {
       console.log("Triggering hourly data refresh...");
       fetchAllData();
@@ -209,10 +200,7 @@ export const App: React.FC = () => {
          const feeB = b.type === 'course' ? b.data.fees : -1;
          return feeB - feeA;
       }
-      // Default: Rating High to Low
-      const ratingA = a.data.rating || 0;
-      const ratingB = b.data.rating || 0;
-      return ratingB - ratingA;
+      return 0;
     });
 
   }, [enrichedCourses, colleges, searchTerm, aiKeyword, filterLocation, resultTypeFilter, sortBy]);
@@ -260,52 +248,6 @@ export const App: React.FC = () => {
   const handleLogout = () => {
     setUser(null);
     setView('home');
-  };
-
-  // --- RATING HANDLERS ---
-  const markAsRated = (id: string) => {
-    const newRatedList = [...ratedItemIds, id];
-    setRatedItemIds(newRatedList);
-    localStorage.setItem('directAdmission_ratedItems', JSON.stringify(newRatedList));
-  };
-
-  const handleRateCourse = async (courseId: string, newRating: number) => {
-    if (ratedItemIds.includes(courseId)) {
-      alert("You have already rated this course!");
-      return;
-    }
-
-    const course = courses.find(c => c.id === courseId);
-    if (!course) return;
-
-    // Calculate new average
-    const currentCount = course.ratingCount || 0;
-    const currentAvg = course.rating || 0;
-    const newCount = currentCount + 1;
-    const newAvg = ((currentAvg * currentCount) + newRating) / newCount;
-
-    const updatedCourse = { ...course, rating: parseFloat(newAvg.toFixed(1)), ratingCount: newCount };
-    await handleUpdateCourse(updatedCourse);
-    markAsRated(courseId);
-  };
-
-  const handleRateCollege = async (collegeId: string, newRating: number) => {
-    if (ratedItemIds.includes(collegeId)) {
-      alert("You have already rated this college!");
-      return;
-    }
-
-    const college = colleges.find(c => c.id === collegeId);
-    if (!college) return;
-
-    const currentCount = college.ratingCount || 0;
-    const currentAvg = college.rating || 0;
-    const newCount = currentCount + 1;
-    const newAvg = ((currentAvg * currentCount) + newRating) / newCount;
-
-    const updatedCollege = { ...college, rating: parseFloat(newAvg.toFixed(1)), ratingCount: newCount };
-    await handleUpdateCollege(updatedCollege);
-    markAsRated(collegeId);
   };
 
   // --- CRUD HANDLERS (Wrappers) ---
@@ -630,7 +572,6 @@ export const App: React.FC = () => {
                       className="w-full py-2.5 pl-3 pr-8 text-sm border border-slate-200 bg-white rounded outline-none focus:ring-2 focus:ring-amber-500 text-slate-700 font-semibold appearance-none"
                       style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
                    >
-                     <option value="rating">Sort: Top Rated</option>
                      {resultTypeFilter !== 'colleges' && <option value="fees_low">Fees: Lowest First</option>}
                      {resultTypeFilter !== 'colleges' && <option value="fees_high">Fees: Highest First</option>}
                    </select>
@@ -657,16 +598,12 @@ export const App: React.FC = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredResults.map((item, idx) => {
-                    const isRated = ratedItemIds.includes(item.data.id);
-
                     if (item.type === 'course') {
                       return (
                         <CourseCard 
                           key={`course-${item.data.id}`} 
                           course={item.data as EnrichedCourse} 
                           onClick={() => handleCourseClick(item.data as EnrichedCourse)}
-                          onRate={(val) => handleRateCourse(item.data.id, val)}
-                          isRated={isRated}
                         />
                       );
                     } else {
@@ -675,8 +612,6 @@ export const App: React.FC = () => {
                           key={`college-${item.data.id}`}
                           college={item.data as College}
                           onClick={() => handleCollegeClick(item.data as College)}
-                          onRate={(val) => handleRateCollege(item.data.id, val)}
-                          isRated={isRated}
                         />
                       );
                     }
@@ -747,8 +682,6 @@ export const App: React.FC = () => {
           collegeData={modalState.selectedCollege}
           collegeCourses={modalCourses}
           onClose={() => setModalState({ ...modalState, isOpen: false })}
-          onRateCourse={handleRateCourse}
-          ratedItemIds={ratedItemIds}
         />
       )}
 
