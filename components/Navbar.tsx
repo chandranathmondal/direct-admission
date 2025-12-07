@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { User } from '../types';
+import { User, UserRole } from '../types';
 
 interface NavbarProps {
   user: User | null;
@@ -12,9 +13,8 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClick, onNavigate, currentView }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Normalize role to handle potential case issues from data source
-  const normalizedRole = user?.role ? user.role.toUpperCase() : null;
-  const isAdminOrEditor = normalizedRole === 'ADMIN' || normalizedRole === 'EDITOR';
+  // Check role directly against Enum (Values are now 'Admin', 'Editor')
+  const isAdminOrEditor = user?.role === UserRole.ADMIN || user?.role === UserRole.EDITOR;
 
   return (
     <div className="flex flex-col w-full">
