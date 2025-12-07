@@ -3,6 +3,7 @@
   packages = [
     pkgs.nodejs_20
     pkgs.gnumake
+    pkgs.ngrok
   ];
   idx.extensions = [
     "svelte.svelte-vscode"
