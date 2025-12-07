@@ -131,6 +131,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       return;
     }
 
+    // Phone Number Validation: Either blank or exactly 10 digits
+    if (newCollege.phone && newCollege.phone.length !== 10) {
+      alert('Contact Phone must be either empty or exactly 10 digits.');
+      return;
+    }
+
     if (newCollege.name && newCollege.location && newCollege.state) {
       if (editingCollegeId) {
         onUpdateCollege({ ...newCollege, id: editingCollegeId } as College);
@@ -418,11 +424,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1 font-serif">Contact Phone</label>
                       <input
-                        type="tel"
+                        type="text"
                         className="w-full p-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-slate-900 text-sm"
-                        placeholder="e.g. +91-9876543210"
+                        placeholder="e.g. 9876543210"
                         value={newCollege.phone || ''}
-                        onChange={(e) => setNewCollege({ ...newCollege, phone: e.target.value })}
+                        onChange={(e) => {
+                          // Validation: Only numeric, max 10 digits, no leading 0
+                          const val = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                          if (val.length > 10) return; // Max 10 digits
+                          if (val.startsWith('0')) return; // Cannot start with 0
+                          setNewCollege({ ...newCollege, phone: val });
+                        }}
                       />
                     </div>
 
@@ -607,14 +619,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1 font-serif">Total Fees (₹)</label>
                     <input
-                      type="number"
+                      type="text" 
                       required
-                      min="0"
-                      onKeyDown={(e) => (e.key === '-' || e.key === 'e') && e.preventDefault()}
                       className="w-full p-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-slate-900 text-sm"
                       placeholder="e.g. 450000"
-                      value={newCourse.fees || ''}
-                      onChange={(e) => setNewCourse({ ...newCourse, fees: Number(e.target.value) })}
+                      value={newCourse.fees !== undefined ? newCourse.fees : ''}
+                      onChange={(e) => {
+                        // Validation: Numeric, No decimal, No leading 0, Max length 7
+                        const val = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                        if (val.length > 7) return; // Max 7 digits
+                        if (val.startsWith('0')) return; // No leading zero
+                        
+                        setNewCourse({ 
+                          ...newCourse, 
+                          fees: val === '' ? undefined : Number(val) 
+                        });
+                      }}
                     />
                   </div>
                   <div>
