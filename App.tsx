@@ -223,6 +223,14 @@ export const App: React.FC = () => {
     const existingUser = users.find(u => u.email.toLowerCase() === normalizedEmail);
     
     if (existingUser) {
+      // STRICT ROLE VALIDATION
+      const validRoles = Object.values(UserRole);
+      if (!validRoles.includes(existingUser.role)) {
+        console.error(`Login Denied: Role '${existingUser.role}' is invalid.`);
+        alert('Access Denied: Your account has an invalid role assigned. Please contact the administrator.');
+        return;
+      }
+
       let currentUserToSet = existingUser;
 
       // Check if avatar needs updating (and ensure it's different to avoid loops/unnecessary saves)
