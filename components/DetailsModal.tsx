@@ -82,7 +82,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative z-10 animate-scaleIn">
         
         {/* Header */}
-        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-amber-600' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
+        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-amber-700' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
            {/* Top Right Close Button */}
            <button 
             onClick={onClose}
@@ -124,7 +124,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                         onClick={() => setCurrentView('college')}
                         className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
                       >
-                        View College &rarr;
+                        View College
                       </button>
                     </div>
                  ) : (
@@ -137,10 +137,10 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                           href={collegeData.mapUrl} 
                           target="_blank" 
                           rel="noreferrer" 
-                          className="text-xs ml-2 flex items-center gap-0.5 hover:underline transition-all text-amber-100 hover:text-white"
+                          className="text-xs ml-2 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold no-underline"
                           title="View on Google Maps"
                         >
-                           View in Google Map &rarr;
+                           View in Google Map
                         </a>
                      )}
                    </p>
