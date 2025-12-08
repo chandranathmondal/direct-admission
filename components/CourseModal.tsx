@@ -82,7 +82,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative z-10 animate-scaleIn">
         
         {/* Header */}
-        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-gradient-to-r from-amber-600 to-amber-500' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
+        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-gradient-to-r from-amber-700 to-amber-900' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
            {/* Top Right Close Button */}
            <button 
             onClick={onClose}
@@ -115,20 +115,19 @@ export const CourseModal: React.FC<CourseModalProps> = ({
                  </button>
                ) : (
                  <p className={`font-medium mt-1 flex items-center gap-1 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`}>
-                   <svg className={`w-4 h-4 ${isCollegeView ? 'text-blue-800' : 'text-amber-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                   {collegeData.mapUrl ? (
+                   <svg className={`w-4 h-4 ${isCollegeView ? 'text-blue-300' : 'text-amber-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                   <span>{collegeData.location}, {collegeData.state}</span>
+                   
+                   {collegeData.mapUrl && (
                       <a 
                         href={collegeData.mapUrl} 
                         target="_blank" 
                         rel="noreferrer" 
-                        className="hover:underline hover:text-white transition-colors flex items-center gap-1.5"
+                        className={`text-xs ml-2 flex items-center gap-0.5 hover:underline transition-all ${isCollegeView ? 'text-amber-200 hover:text-white' : 'text-amber-400 hover:text-amber-300'}`}
                         title="View on Google Maps"
                       >
-                        <span>{collegeData.location}, {collegeData.state}</span>
-                        <span className="text-[10px] font-normal uppercase tracking-wide bg-white/20 px-1.5 py-0.5 rounded shadow-sm">(View in Google Map)</span>
+                         View in Google Map &rarr;
                       </a>
-                   ) : (
-                      <span>{collegeData.location}, {collegeData.state}</span>
                    )}
                  </p>
                )}
@@ -235,7 +234,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
         <div className="p-4 border-t border-slate-200 bg-white flex justify-center shrink-0">
           <a 
             href={`tel:+91${displayPhone}`}
-            className="px-8 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-lg transform hover:-translate-y-0.5"
+            className={`px-8 py-3 text-white rounded-lg font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-lg transform hover:-translate-y-0.5 ${isCollegeView ? 'bg-amber-600 hover:bg-amber-700' : 'bg-blue-700 hover:bg-blue-800'}`}
           >
             <span>📞</span> {currentView === 'college' ? 'Connect With College' : 'Book Your Seat'}
           </a>

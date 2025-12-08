@@ -89,11 +89,11 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onClick }) => {
           <button 
             onClick={handleGetInsight}
             disabled={loadingInsight}
-            className="px-3 py-1.5 bg-white border border-slate-200 hover:border-amber-300 text-slate-600 hover:text-amber-700 rounded text-xs font-semibold transition-all shadow-sm flex items-center gap-1.5 group/btn"
+            className="px-3 py-1.5 bg-white border border-slate-200 hover:border-blue-300 text-slate-600 hover:text-blue-700 rounded text-xs font-semibold transition-all shadow-sm flex items-center gap-1.5 group/btn"
           >
             {loadingInsight ? 'Thinking...' : 'AI Insights'}
             {!loadingInsight && (
-               <svg className="w-3.5 h-3.5 text-amber-500 group-hover/btn:text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+               <svg className="w-3.5 h-3.5 text-blue-600 group-hover/btn:text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             )}
           </button>
         </div>
