@@ -25,8 +25,8 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
           <div className="flex gap-4">
             <span>🇮🇳 India's Trusted Admission Portal</span>
             <span className="text-slate-500">|</span>
-            {/* Updated Support Number */}
-            <span>📞 Support: +91-{CONTACT_PHONE}</span>
+            {/* Updated Support Number with hyphen format */}
+            <span>📞 Support: +91-{CONTACT_PHONE.slice(0, 5)}-{CONTACT_PHONE.slice(5)}</span>
           </div>
           <div className="flex gap-4">
             <span className="hover:text-white cursor-pointer">Counselling</span>

@@ -742,7 +742,8 @@ export const App: React.FC = () => {
            <div>
               <h5 className="text-white font-bold mb-3 uppercase tracking-wider text-xs">Contact</h5>
               <p className="mt-2 text-amber-500">{CONTACT_EMAIL}</p>
-              <p className="mt-1">Phone: +91-{CONTACT_PHONE}</p>
+              {/* Updated Contact Number with hyphen format */}
+              <p className="mt-1">Phone: +91-{CONTACT_PHONE.slice(0, 5)}-{CONTACT_PHONE.slice(5)}</p>
            </div>
         </div>
         <div className="text-center pt-8 border-t border-slate-800 text-xs">
