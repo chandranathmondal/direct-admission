@@ -106,13 +106,19 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                
                {/* Context Navigation */}
                {currentView === 'course' && initialView === 'college' ? (
-                 <button 
-                  onClick={() => setCurrentView('college')}
-                  className="text-blue-100 font-medium text-lg mt-1 hover:text-white hover:underline text-left transition-colors flex items-center gap-2"
-                 >
-                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                   Back to {collegeData.name} Courses
-                 </button>
+                 <div className="flex flex-wrap items-center gap-3 mt-1">
+                    <p className="font-medium flex items-center gap-2 text-blue-100">
+                      <span className="text-xl">🏛️</span>
+                      <span>{collegeData.name}</span>
+                    </p>
+                    <button 
+                      onClick={() => setCurrentView('college')}
+                      className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                      Back to
+                    </button>
+                 </div>
                ) : (
                  currentView === 'course' ? (
                     <div className="flex flex-wrap items-center gap-3 mt-1">
