@@ -1,16 +1,14 @@
+
 import React, { useState } from 'react';
 import { College } from '../types';
-import { StarRating } from './StarRating';
 import { getCollegeInsights } from '../services/geminiService';
 
 interface CollegeCardProps {
   college: College;
-  onRate: (newRating: number) => void;
   onClick?: () => void;
-  isRated?: boolean;
 }
 
-export const CollegeCard: React.FC<CollegeCardProps> = ({ college, onRate, onClick, isRated = false }) => {
+export const CollegeCard: React.FC<CollegeCardProps> = ({ college, onClick }) => {
   const [insight, setInsight] = useState<string | null>(null);
   const [loadingInsight, setLoadingInsight] = useState(false);
 
@@ -53,19 +51,6 @@ export const CollegeCard: React.FC<CollegeCardProps> = ({ college, onRate, onCli
                <div className="flex items-center text-slate-600 text-xs font-medium font-sans">
                 <svg className="w-3.5 h-3.5 mr-1.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 {college.location}, {college.state}
-              </div>
-              
-              <div className="flex items-center justify-between mt-1">
-                 <div className="flex items-center gap-2">
-                    <StarRating 
-                      rating={college.rating || 0} 
-                      count={college.ratingCount || 0}
-                      onRate={onRate}
-                      size="sm"
-                      readonly={isRated}
-                    />
-                 </div>
-                 {isRated && <span className="text-[10px] text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded-full border border-green-100">RATED</span>}
               </div>
             </div>
           </div>

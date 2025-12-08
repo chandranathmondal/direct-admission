@@ -7,8 +7,6 @@ export interface College {
   logoUrl?: string;
   description?: string; // Short bio of college
   phone?: string; // Contact number for admissions
-  rating: number; // 0 to 5
-  ratingCount: number;
 }
 
 export interface Course {
@@ -18,8 +16,6 @@ export interface Course {
   fees: number; // Total fees in INR
   duration: string; // e.g., "4 Years"
   description: string;
-  rating: number; // 0 to 5
-  ratingCount: number;
 }
 
 // Used for Frontend Rendering (Result of Join)
@@ -49,5 +45,5 @@ export interface SearchFilters {
   location?: string;
   state?: string;
   maxFees?: number;
-  sortIntent?: 'fees_low' | 'fees_high' | 'rating';
+  sortIntent?: 'fees_low' | 'fees_high';
 }
