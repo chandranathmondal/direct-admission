@@ -560,40 +560,53 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   
                   {/* Select College with basic search */}
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-1 font-serif">Select College</label>
-                    <div className="relative">
-                      <input 
-                        type="text"
-                        className="w-full p-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-slate-900 text-sm"
-                        placeholder="Search & Select College..."
-                        value={courseSearchCollegeTerm}
-                        onChange={(e) => {
-                          setCourseSearchCollegeTerm(e.target.value);
-                          if(e.target.value === '') setNewCourse({...newCourse, collegeId: ''});
-                        }}
-                      />
-                      {courseSearchCollegeTerm && !selectedCollegeForCourse && (
-                         <div className="absolute z-10 w-full bg-white border border-slate-200 mt-1 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                           {filteredCollegeOptions.map(col => (
-                             <div 
-                              key={col.id} 
-                              className="p-2 hover:bg-slate-50 cursor-pointer text-sm text-slate-700"
-                              onClick={() => {
-                                setNewCourse({...newCourse, collegeId: col.id});
-                                setCourseSearchCollegeTerm(col.name);
-                              }}
-                             >
-                               {col.name}
-                             </div>
-                           ))}
-                           {filteredCollegeOptions.length === 0 && (
-                             <div className="p-2 text-slate-400 text-sm italic">No colleges found</div>
-                           )}
-                         </div>
-                      )}
-                    </div>
-                    {/* Read-only Location display */}
-                    {selectedCollegeForCourse && (
+                    <label className="block text-sm font-medium text-slate-700 mb-1 font-serif">
+                      {editingCourseId ? 'Associated College' : 'Select College'}
+                    </label>
+                    
+                    {editingCourseId ? (
+                      /* Read-only view for Edit Mode */
+                      <div className="w-full p-2.5 bg-slate-100 border border-slate-300 rounded-md text-slate-500 text-sm cursor-not-allowed flex items-center justify-between">
+                        <span>{selectedCollegeForCourse?.name || "Unknown College"}</span>
+                        <span className="text-xs text-slate-400 font-medium">(Locked)</span>
+                      </div>
+                    ) : (
+                      /* Search Input for Add Mode */
+                      <div className="relative">
+                        <input 
+                          type="text"
+                          className="w-full p-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-slate-900 text-sm"
+                          placeholder="Search & Select College..."
+                          value={courseSearchCollegeTerm}
+                          onChange={(e) => {
+                            setCourseSearchCollegeTerm(e.target.value);
+                            if(e.target.value === '') setNewCourse({...newCourse, collegeId: ''});
+                          }}
+                        />
+                        {courseSearchCollegeTerm && !selectedCollegeForCourse && (
+                           <div className="absolute z-10 w-full bg-white border border-slate-200 mt-1 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                             {filteredCollegeOptions.map(col => (
+                               <div 
+                                key={col.id} 
+                                className="p-2 hover:bg-slate-50 cursor-pointer text-sm text-slate-700"
+                                onClick={() => {
+                                  setNewCourse({...newCourse, collegeId: col.id});
+                                  setCourseSearchCollegeTerm(col.name);
+                                }}
+                               >
+                                 {col.name}
+                               </div>
+                             ))}
+                             {filteredCollegeOptions.length === 0 && (
+                               <div className="p-2 text-slate-400 text-sm italic">No colleges found</div>
+                             )}
+                           </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Read-only Location display (Only for Add Mode, Edit mode handled above) */}
+                    {!editingCourseId && selectedCollegeForCourse && (
                       <p className="mt-1 text-xs text-green-700 font-medium">
                         ✓ Selected: {selectedCollegeForCourse.name} ({selectedCollegeForCourse.location})
                       </p>
