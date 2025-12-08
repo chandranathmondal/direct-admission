@@ -102,3 +102,8 @@ merge-changes: prepare
 	echo ""; \
 	echo "✅ Merge applied to working tree."; \
 	echo "🛑 No commit created. Review changes before committing."
+
+# Ngrok configuration and start
+ngrok:
+	ngrok config add-authtoken $(NGROK_TOKEN)
+	ngrok http $(PORT)
