@@ -7,6 +7,7 @@ export interface College {
   logoUrl?: string;
   description?: string; // Short bio of college
   phone?: string; // Contact number for admissions
+  mapUrl?: string; // Google Maps URL
 }
 
 export interface Course {
