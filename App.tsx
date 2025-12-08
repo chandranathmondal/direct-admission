@@ -5,7 +5,7 @@ import { CourseCard } from './components/CourseCard';
 import { CollegeCard } from './components/CollegeCard';
 import { Login } from './components/Login';
 import { AdminDashboard } from './components/AdminDashboard';
-import { CourseModal } from './components/CourseModal';
+import { DetailsModal } from './components/DetailsModal';
 import { Course, User, UserRole, College, EnrichedCourse } from './types';
 import { STATES_OF_INDIA, CONTACT_EMAIL, CONTACT_PHONE } from './constants';
 import { parseSearchQuery } from './services/geminiService';
@@ -689,7 +689,7 @@ export const App: React.FC = () => {
       
       {/* Unified Course/College Modal */}
       {modalState.isOpen && modalState.selectedCollege && (
-        <CourseModal 
+        <DetailsModal 
           initialView={modalState.viewMode}
           selectedCourse={modalState.selectedCourse}
           collegeData={modalState.selectedCollege}
