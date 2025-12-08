@@ -93,7 +93,7 @@ show-changes: prepare
 
 # Perform an actual merge into release but do NOT create a commit
 merge-changes: prepare
-	echo "📌 Merging $$BRANCH → release (NO COMMIT)"; \
+	@echo "📌 Merging $$BRANCH → release (NO COMMIT)"; \
 	git merge origin/$(BRANCH) --no-commit --no-ff || { \
 		echo ""; \
 		echo "❌ Merge conflicts detected. Resolve manually."; \
@@ -102,3 +102,8 @@ merge-changes: prepare
 	echo ""; \
 	echo "✅ Merge applied to working tree."; \
 	echo "🛑 No commit created. Review changes before committing."
+
+# Ngrok configuration and start
+ngrok:
+	ngrok config add-authtoken $(NGROK_TOKEN)
+	ngrok http $(PORT)
