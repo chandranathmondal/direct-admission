@@ -30,12 +30,13 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const SHEET_CONFIG = {
   COLLEGES: {
     title: 'Colleges',
-    // Added 'phone' to headers
-    headers: ['id', 'name', 'location', 'state', 'logoUrl', 'description', 'rating', 'ratingCount', 'phone']
+    // Added 'phone' to headers, Removed rating fields
+    headers: ['id', 'name', 'location', 'state', 'logoUrl', 'description', 'phone']
   },
   COURSES: {
     title: 'Courses',
-    headers: ['id', 'collegeId', 'courseName', 'fees', 'duration', 'description', 'rating', 'ratingCount']
+    // Removed rating fields
+    headers: ['id', 'collegeId', 'courseName', 'fees', 'duration', 'description']
   },
   USERS: {
     title: 'Users',
@@ -113,7 +114,7 @@ async function refreshCache() {
           let val = row.get(header);
           
           // Data Type Conversion
-          if (header === 'fees' || header === 'rating' || header === 'ratingCount') {
+          if (header === 'fees') {
             item[header] = val ? Number(val) : 0;
           } else {
             item[header] = val || '';
