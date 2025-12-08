@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { EnrichedCourse, College } from '../types';
 import { getCourseInsights } from '../services/geminiService';
@@ -82,7 +81,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative z-10 animate-scaleIn">
         
         {/* Header */}
-        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-gradient-to-r from-amber-700 to-amber-900' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
+        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-gradient-to-r from-slate-900 to-amber-900' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
            {/* Top Right Close Button */}
            <button 
             onClick={onClose}
@@ -114,22 +113,29 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                    Back to {collegeData.name} Courses
                  </button>
                ) : (
-                 <p className={`font-medium mt-1 flex items-center gap-1 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`}>
-                   <svg className={`w-4 h-4 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                   <span>{collegeData.location}, {collegeData.state}</span>
-                   
-                   {collegeData.mapUrl && (
-                      <a 
-                        href={collegeData.mapUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className={`text-xs ml-2 flex items-center gap-0.5 hover:underline transition-all ${isCollegeView ? 'text-amber-200 hover:text-white' : 'text-amber-400 hover:text-amber-300'}`}
-                        title="View on Google Maps"
-                      >
-                         View in Google Map &rarr;
-                      </a>
-                   )}
-                 </p>
+                 currentView === 'course' ? (
+                    <p className="font-medium mt-1 flex items-center gap-2 text-blue-200">
+                      <span className="text-xl">🏛️</span>
+                      <span>{collegeData.name}</span>
+                    </p>
+                 ) : (
+                   <p className="font-medium mt-1 flex items-center gap-1 text-white/90">
+                     <svg className="w-4 h-4 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                     <span>{collegeData.location}, {collegeData.state}</span>
+                     
+                     {collegeData.mapUrl && (
+                        <a 
+                          href={collegeData.mapUrl} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-xs ml-2 flex items-center gap-0.5 hover:underline transition-all text-amber-200 hover:text-white"
+                          title="View on Google Maps"
+                        >
+                           View in Google Map &rarr;
+                        </a>
+                     )}
+                   </p>
+                 )
                )}
              </div>
            </div>
