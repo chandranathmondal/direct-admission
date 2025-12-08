@@ -1,8 +1,12 @@
 
 import { Course, User, UserRole, College } from './types';
 
-// Read initial admin from Environment Variable
-export const INITIAL_ADMIN_EMAIL = process.env.REACT_APP_INITIAL_ADMIN_EMAIL || "contact@direct-admission.com";
+// Dynamic Contact Configuration
+export const CONTACT_PHONE = "9874530810";
+export const CONTACT_EMAIL = "contact@direct-admission.com";
+
+// Read initial admin from Constant (Previously Env Var)
+export const INITIAL_ADMIN_EMAIL = CONTACT_EMAIL;
 
 export const STATES_OF_INDIA = [
   "West Bengal"

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, UserRole } from '../types';
+import { CONTACT_PHONE } from '../constants';
 
 interface NavbarProps {
   user: User | null;
@@ -24,7 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
             <span>🇮🇳 India's Trusted Admission Portal</span>
             <span className="text-slate-500">|</span>
             {/* Updated Support Number */}
-            <span>📞 Support: +91-89260-26739</span>
+            <span>📞 Support: +91-{CONTACT_PHONE}</span>
           </div>
           <div className="flex gap-4">
             <span className="hover:text-white cursor-pointer">Counselling</span>
@@ -149,7 +150,6 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
                       />
                       <div className="ml-3">
                         <div className="text-base font-medium leading-none text-slate-800 font-serif">{user.name}</div>
-                        <div className="text-sm font-medium leading-none text-slate-500 mt-1">{user.email}</div>
                         <span className="inline-block mt-2 text-[10px] uppercase tracking-wide bg-white border border-slate-200 px-2 py-0.5 rounded text-slate-600 font-bold">{user.role}</span>
                       </div>
                    </div>

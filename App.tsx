@@ -7,7 +7,7 @@ import { Login } from './components/Login';
 import { AdminDashboard } from './components/AdminDashboard';
 import { CourseModal } from './components/CourseModal';
 import { Course, User, UserRole, College, EnrichedCourse } from './types';
-import { STATES_OF_INDIA } from './constants';
+import { STATES_OF_INDIA, CONTACT_EMAIL, CONTACT_PHONE } from './constants';
 import { parseSearchQuery } from './services/geminiService';
 import { storageService } from './services/storageService';
 
@@ -741,8 +741,8 @@ export const App: React.FC = () => {
            </div>
            <div>
               <h5 className="text-white font-bold mb-3 uppercase tracking-wider text-xs">Contact</h5>
-              <p className="mt-2 text-amber-500">contact@direct-admission.com</p>
-              <p className="mt-1">Phone: +91-89260-26739</p>
+              <p className="mt-2 text-amber-500">{CONTACT_EMAIL}</p>
+              <p className="mt-1">Phone: +91-{CONTACT_PHONE}</p>
            </div>
         </div>
         <div className="text-center pt-8 border-t border-slate-800 text-xs">
