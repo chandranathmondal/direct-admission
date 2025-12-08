@@ -18,7 +18,6 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [react()],
       define: {
-        'process.env.REACT_APP_INITIAL_ADMIN_EMAIL': JSON.stringify(env.REACT_APP_INITIAL_ADMIN_EMAIL),
         'process.env.REACT_APP_GOOGLE_CLIENT_ID': JSON.stringify(env.REACT_APP_GOOGLE_CLIENT_ID)
       },
       resolve: {

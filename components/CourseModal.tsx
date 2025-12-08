@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { EnrichedCourse, College } from '../types';
 import { getCourseInsights } from '../services/geminiService';
 import { CourseCard } from './CourseCard'; // Reuse CourseCard for list view
+import { CONTACT_PHONE } from '../constants';
 
 interface CourseModalProps {
   initialView: 'college' | 'course';
@@ -25,6 +26,9 @@ export const CourseModal: React.FC<CourseModalProps> = ({
   // AI Insight State
   const [insight, setInsight] = useState<string | null>(null);
   const [loadingInsight, setLoadingInsight] = useState(false);
+
+  // Determine phone number to display/call: College specific or fallback to global contact
+  const displayPhone = collegeData.phone || CONTACT_PHONE;
 
   // Close on Escape key and Lock Body Scroll
   useEffect(() => {
@@ -214,7 +218,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
         {/* Footer with Book Your Seat Button (Centered) */}
         <div className="p-4 border-t border-slate-200 bg-white flex justify-center shrink-0">
           <a 
-            href={`tel:${collegeData.phone || '+918926026739'}`}
+            href={`tel:+91${displayPhone}`}
             className="px-8 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-lg transform hover:-translate-y-0.5"
           >
             <span>📞</span> {currentView === 'college' ? 'Connect With College' : 'Book Your Seat'}

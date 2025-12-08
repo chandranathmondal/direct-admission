@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { User, UserRole } from '../types';
+import { CONTACT_PHONE } from '../constants';
 
 interface NavbarProps {
   user: User | null;
@@ -25,7 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLoginClick, onLogoutClic
             <span>🇮🇳 India's Trusted Admission Portal</span>
             <span className="text-slate-500">|</span>
             {/* Updated Support Number */}
-            <span>📞 Support: +91-89260-26739</span>
+            <span>📞 Support: +91-{CONTACT_PHONE}</span>
           </div>
           <div className="flex gap-4">
             <span className="hover:text-white cursor-pointer">Counselling</span>
