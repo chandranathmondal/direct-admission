@@ -583,8 +583,8 @@ export const App: React.FC = () => {
                       className="w-full py-2.5 pl-3 pr-8 text-sm border border-slate-200 bg-white rounded outline-none focus:ring-2 focus:ring-amber-500 text-slate-700 font-semibold appearance-none"
                       style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
                    >
-                     <option value="alpha_asc">Name: A to Z</option>
-                     <option value="alpha_desc">Name: Z to A</option>
+                     <option value="alpha_asc">Name: A -&gt; Z</option>
+                     <option value="alpha_desc">Name: Z -&gt; A</option>
                      {resultTypeFilter !== 'colleges' && <option value="fees_low">Fees: Lowest First</option>}
                      {resultTypeFilter !== 'colleges' && <option value="fees_high">Fees: Highest First</option>}
                    </select>
