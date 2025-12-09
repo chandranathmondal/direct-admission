@@ -155,6 +155,7 @@ jobs:
           REGION: ${{ vars.REGION }}
           CPU: ${{ vars.CPU }}
           MEMORY: ${{ vars.MEMORY }}
+          APP_RUNNER_ASC_ARN: ${{ vars.APP_RUNNER_ASC_ARN }}
 
       - uses: ./.github/actions/deploy-to-gcp
         if: vars.CLOUD == 'GCP'

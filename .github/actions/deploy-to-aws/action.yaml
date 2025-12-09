@@ -86,7 +86,8 @@ runs:
               \"Cpu\": \"${{ env.CPU }}\",
               \"Memory\": \"${{ env.MEMORY }}\",
               \"InstanceRoleArn\": \"$INSTANCE_ROLE_ARN\"
-            }"
+            }" \
+            --auto-scaling-configuration-arn "${{ env.APP_RUNNER_ASC_ARN }}"
 
           echo "✅ Service created successfully."
 
@@ -123,7 +124,8 @@ runs:
               \"Cpu\": \"${{ env.CPU }}\",
               \"Memory\": \"${{ env.MEMORY }}\",
               \"InstanceRoleArn\": \"$INSTANCE_ROLE_ARN\"
-            }"
+            }" \
+            --auto-scaling-configuration-arn "${{ env.APP_RUNNER_ASC_ARN }}"
 
           echo "🚀 Update triggered successfully."
         fi
