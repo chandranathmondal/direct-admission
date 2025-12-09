@@ -5,7 +5,7 @@ import { CourseCard } from './components/CourseCard';
 import { CollegeCard } from './components/CollegeCard';
 import { Login } from './components/Login';
 import { AdminDashboard } from './components/AdminDashboard';
-import { CourseModal } from './components/CourseModal';
+import { DetailsModal } from './components/DetailsModal';
 import { Course, User, UserRole, College, EnrichedCourse } from './types';
 import { STATES_OF_INDIA, CONTACT_EMAIL, CONTACT_PHONE } from './constants';
 import { parseSearchQuery } from './services/geminiService';
@@ -30,9 +30,10 @@ export const App: React.FC = () => {
   const [isAiSearching, setIsAiSearching] = useState(false);
   const [isVoiceListening, setIsVoiceListening] = useState(false);
 
-  // New Result Filters
-  const [resultTypeFilter, setResultTypeFilter] = useState<'all' | 'courses' | 'colleges'>('all');
-  const [sortBy, setSortBy] = useState<'fees_low' | 'fees_high'>('fees_low');
+  // New Result Filters - Default to 'colleges'
+  const [resultTypeFilter, setResultTypeFilter] = useState<'all' | 'courses' | 'colleges'>('colleges');
+  // Default to Alphabetical Ascending
+  const [sortBy, setSortBy] = useState<'fees_low' | 'fees_high' | 'alpha_asc' | 'alpha_desc'>('alpha_asc');
 
   // Modal State
   const [modalState, setModalState] = useState<{
@@ -199,6 +200,16 @@ export const App: React.FC = () => {
          const feeA = a.type === 'course' ? a.data.fees : -1;
          const feeB = b.type === 'course' ? b.data.fees : -1;
          return feeB - feeA;
+      }
+      if (sortBy === 'alpha_asc') {
+        const nameA = a.type === 'course' ? a.data.courseName : a.data.name;
+        const nameB = b.type === 'course' ? b.data.courseName : b.data.name;
+        return nameA.localeCompare(nameB);
+      }
+      if (sortBy === 'alpha_desc') {
+        const nameA = a.type === 'course' ? a.data.courseName : a.data.name;
+        const nameB = b.type === 'course' ? b.data.courseName : b.data.name;
+        return nameB.localeCompare(nameA);
       }
       return 0;
     });
@@ -531,10 +542,10 @@ export const App: React.FC = () => {
                 {/* Desktop/Tablet Type Toggles */}
                 <div className="hidden sm:flex bg-slate-100 p-1 rounded-md overflow-x-auto no-scrollbar">
                    <button 
-                    onClick={() => setResultTypeFilter('all')}
-                    className={`px-4 py-2 text-sm font-semibold rounded transition-all whitespace-nowrap ${resultTypeFilter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                    onClick={() => setResultTypeFilter('colleges')}
+                    className={`px-4 py-2 text-sm font-semibold rounded transition-all whitespace-nowrap ${resultTypeFilter === 'colleges' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
                    >
-                     All Results
+                     Institutes Only
                    </button>
                    <button 
                     onClick={() => setResultTypeFilter('courses')}
@@ -543,10 +554,10 @@ export const App: React.FC = () => {
                      Programs Only
                    </button>
                    <button 
-                    onClick={() => setResultTypeFilter('colleges')}
-                    className={`px-4 py-2 text-sm font-semibold rounded transition-all whitespace-nowrap ${resultTypeFilter === 'colleges' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                    onClick={() => setResultTypeFilter('all')}
+                    className={`px-4 py-2 text-sm font-semibold rounded transition-all whitespace-nowrap ${resultTypeFilter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
                    >
-                     Institutes Only
+                     All Results
                    </button>
                 </div>
 
@@ -558,9 +569,9 @@ export const App: React.FC = () => {
                     className="w-full py-2.5 pl-3 pr-8 text-sm border border-slate-200 bg-slate-50 rounded font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-amber-500 appearance-none"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
                   >
-                    <option value="all">View All</option>
-                    <option value="courses">Programs Only</option>
                     <option value="colleges">Institutes Only</option>
+                    <option value="courses">Programs Only</option>
+                    <option value="all">View All</option>
                   </select>
                 </div>
 
@@ -572,6 +583,8 @@ export const App: React.FC = () => {
                       className="w-full py-2.5 pl-3 pr-8 text-sm border border-slate-200 bg-white rounded outline-none focus:ring-2 focus:ring-amber-500 text-slate-700 font-semibold appearance-none"
                       style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
                    >
+                     <option value="alpha_asc">Name: A -&gt; Z</option>
+                     <option value="alpha_desc">Name: Z -&gt; A</option>
                      {resultTypeFilter !== 'colleges' && <option value="fees_low">Fees: Lowest First</option>}
                      {resultTypeFilter !== 'colleges' && <option value="fees_high">Fees: Highest First</option>}
                    </select>
@@ -589,7 +602,7 @@ export const App: React.FC = () => {
                   <h3 className="text-xl font-bold text-slate-900 font-serif mb-2">No matching results found</h3>
                   <p className="text-slate-500 mb-6">We couldn't find any colleges or courses matching your specific criteria. Try broadening your search.</p>
                   <button 
-                    onClick={() => {setSearchTerm(''); setFilterLocation(''); setResultTypeFilter('all');}}
+                    onClick={() => {setSearchTerm(''); setFilterLocation(''); setResultTypeFilter('colleges');}}
                     className="px-5 py-2 bg-amber-600 text-white rounded font-medium hover:bg-amber-700 transition-colors shadow-sm"
                   >
                     Clear Search Filters
@@ -676,7 +689,7 @@ export const App: React.FC = () => {
       
       {/* Unified Course/College Modal */}
       {modalState.isOpen && modalState.selectedCollege && (
-        <CourseModal 
+        <DetailsModal 
           initialView={modalState.viewMode}
           selectedCourse={modalState.selectedCourse}
           collegeData={modalState.selectedCollege}

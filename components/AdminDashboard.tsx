@@ -435,6 +435,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
 
                     <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1 font-serif">Google Maps Link</label>
+                      <input
+                        type="url"
+                        className="w-full p-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-slate-900 text-sm"
+                        placeholder="e.g. https://maps.google.com/..."
+                        value={newCollege.mapUrl || ''}
+                        onChange={(e) => setNewCollege({ ...newCollege, mapUrl: e.target.value })}
+                      />
+                    </div>
+
+                    <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1 font-serif">College Logo</label>
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 border border-slate-300 rounded-md bg-white flex items-center justify-center overflow-hidden">
