@@ -5,7 +5,7 @@ import { getCourseInsights } from '../services/geminiService';
 import { CourseCard } from './CourseCard'; // Reuse CourseCard for list view
 import { CONTACT_PHONE } from '../constants';
 
-interface CourseModalProps {
+interface DetailsModalProps {
   initialView: 'college' | 'course';
   selectedCourse?: EnrichedCourse | null;
   collegeData: College;
@@ -13,7 +13,7 @@ interface CourseModalProps {
   onClose: () => void;
 }
 
-export const CourseModal: React.FC<CourseModalProps> = ({ 
+export const DetailsModal: React.FC<DetailsModalProps> = ({ 
   initialView, 
   selectedCourse, 
   collegeData, 
@@ -82,7 +82,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col relative z-10 animate-scaleIn">
         
         {/* Header */}
-        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-gradient-to-r from-amber-700 to-amber-900' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
+        <div className={`relative p-6 text-white shrink-0 transition-colors duration-300 ${isCollegeView ? 'bg-amber-700' : 'bg-gradient-to-r from-blue-900 to-slate-800'}`}>
            {/* Top Right Close Button */}
            <button 
             onClick={onClose}
@@ -106,30 +106,51 @@ export const CourseModal: React.FC<CourseModalProps> = ({
                
                {/* Context Navigation */}
                {currentView === 'course' && initialView === 'college' ? (
-                 <button 
-                  onClick={() => setCurrentView('college')}
-                  className="text-blue-200 font-medium text-lg mt-1 hover:text-white hover:underline text-left transition-colors flex items-center gap-2"
-                 >
-                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                   Back to {collegeData.name} Courses
-                 </button>
+                 <div className="flex flex-wrap items-center gap-3 mt-1">
+                    <p className="font-medium flex items-center gap-2 text-blue-100">
+                      <span className="text-xl">🏛️</span>
+                      <span>{collegeData.name}</span>
+                    </p>
+                    <button 
+                      onClick={() => setCurrentView('college')}
+                      className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                      Go back
+                    </button>
+                 </div>
                ) : (
-                 <p className={`font-medium mt-1 flex items-center gap-1 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`}>
-                   <svg className={`w-4 h-4 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                   <span>{collegeData.location}, {collegeData.state}</span>
-                   
-                   {collegeData.mapUrl && (
-                      <a 
-                        href={collegeData.mapUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className={`text-xs ml-2 flex items-center gap-0.5 hover:underline transition-all ${isCollegeView ? 'text-amber-200 hover:text-white' : 'text-amber-400 hover:text-amber-300'}`}
-                        title="View on Google Maps"
+                 currentView === 'course' ? (
+                    <div className="flex flex-wrap items-center gap-3 mt-1">
+                      <p className="font-medium flex items-center gap-2 text-blue-100">
+                        <span className="text-xl">🏛️</span>
+                        <span>{collegeData.name}</span>
+                      </p>
+                      <button 
+                        onClick={() => setCurrentView('college')}
+                        className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
                       >
-                         View in Google Map &rarr;
-                      </a>
-                   )}
-                 </p>
+                        View College
+                      </button>
+                    </div>
+                 ) : (
+                   <p className="font-medium mt-1 flex items-center gap-1 text-white/90">
+                     <svg className="w-4 h-4 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                     <span>{collegeData.location}, {collegeData.state}</span>
+                     
+                     {collegeData.mapUrl && (
+                        <a 
+                          href={collegeData.mapUrl} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="text-xs ml-2 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold no-underline"
+                          title="View on Google Maps"
+                        >
+                           View in Google Map
+                        </a>
+                     )}
+                   </p>
+                 )
                )}
              </div>
            </div>

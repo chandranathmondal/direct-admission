@@ -30,8 +30,8 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const SHEET_CONFIG = {
   COLLEGES: {
     title: 'Colleges',
-    // Added 'phone' to headers, Removed rating fields
-    headers: ['id', 'name', 'location', 'state', 'logoUrl', 'description', 'phone']
+    // Added 'phone' and 'mapUrl' to headers
+    headers: ['id', 'name', 'location', 'state', 'logoUrl', 'description', 'phone', 'mapUrl']
   },
   COURSES: {
     title: 'Courses',
