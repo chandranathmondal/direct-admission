@@ -1,0 +1,52 @@
+name: Deploy Service
+description: Deploy app to AWS App Runner or GCP Cloud Run service.
+
+inputs:
+  cloud:
+    description: Target cloud environment
+    equired: true
+
+  service-name:
+    required: true
+
+  image-path:
+    description: Docker image path
+    required: true
+
+  gemini-api-key-secret-ref:
+    description: Gemini API Key secret reference in Secrets Manager
+    required: true
+
+  google-sheet-id:
+    required: true
+
+  google-service-account-email:
+    required: true
+
+  google-private-key-secret-ref:
+    description: Google Private Key secret reference in Secrets Manager for service account
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - uses: ./.github/actions/deploy-to-aws
+      if: inputs.cloud == 'AWS'
+      with:
+        service-name: ${{ inputs.service-name }}
+        image-path: ${{ inputs.image-path }}
+        gemini-api-key-secret-arn: ${{ inputs.gemini-api-key-secret-ref }}
+        google-sheet-id: ${{ inputs.google-sheet-id }}
+        google-service-account-email: ${{ inputs.google-service-account-email }}
+        google-private-key-secret-arn: ${{ inputs.google-private-key-secret-ref }}
+
+    - uses: ./.github/actions/deploy-to-gcp
+      if: inputs.cloud == 'GCP'
+      with:
+        service-name: ${{ inputs.service-name }}
+        image-path: ${{ inputs.image-path }}
+        gemini-api-key-secret-name: ${{ inputs.gemini-api-key-secret-ref }}
+        google-sheet-id: ${{ inputs.google-sheet-id }}
+        google-service-account-email: ${{ inputs.google-service-account-email }}
+        google-private-key-secret-name: ${{ inputs.google-private-key-secret-ref }}

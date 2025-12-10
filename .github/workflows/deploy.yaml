@@ -1,0 +1,56 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Target envrionment
+        options:
+          - stage
+          - prod
+        required: true
+        default: stage
+      image-tag:
+        description: Image tag (commit short sha or semantic version)
+        required: true
+
+run-name: "Deploy version: ${{ inputs.image-tag }} to ${{ inputs.environment }}"
+
+jobs:
+  detect-environment:
+    runs-on: ubuntu-latest
+
+    outputs:
+      scale: ${{ steps.detect.outputs.environment }}
+
+    steps:
+      - name: Detect envrionment
+        id: delect
+        run: echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+
+  deploy-service:
+    needs: detect-environment
+    runs-on: ubuntu-latest
+    environment: {{ needs.detect-environment.outputs.environment }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/deploy-service
+        with:
+          cloud: ${{ vars.CLOUD }}
+          service-name: ${{ vars.SERVICE_NAME }}
+          image-path: ${{ needs.continuous-delivery.outputs.image-path }}
+          gemini-api-key-secret-ref: ${{ vars.GEMINI_API_KEY_SECRET_REF }}
+          google-sheet-id: ${{ vars.GOOGLE_SHEET_ID }}
+          google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          google-private-key-secret-ref: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_REF }}
+        env:
+          GH_RUNNER_ROLE_ARN: ${{ vars.GH_RUNNER_ROLE_ARN }}
+          APP_RUNNER_INSTANCE_ROLE_NAME: ${{ vars.APP_RUNNER_INSTANCE_ROLE_NAME }}
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          REGION: ${{ vars.REGION }}
+          CPU: ${{ vars.CPU }}
+          MEMORY: ${{ vars.MEMORY }}
