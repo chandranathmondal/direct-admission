@@ -41,7 +41,7 @@ jobs:
         with:
           cloud: ${{ vars.CLOUD }}
           service-name: ${{ vars.SERVICE_NAME }}
-          image-path: ${{ needs.continuous-delivery.outputs.image-path }}
+          image-path: ${{ vars.DOCKER_REPO }}:${{ inputs.image-tag }}
           gemini-api-key-secret-ref: ${{ vars.GEMINI_API_KEY_SECRET_REF }}
           google-sheet-id: ${{ vars.GOOGLE_SHEET_ID }}
           google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
