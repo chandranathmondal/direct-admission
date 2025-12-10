@@ -28,14 +28,16 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
       
-      - name: Fetch release branch
-        run: git fetch origin release
+      - name: Fetch base branch (release)
+        run: git fetch origin release:release
 
-      - name: Merge PR changes into release
+      - name: Merge PR branch into release
         run: |
-          # Make release branch the target of merge
-          git checkout -B release origin/release
-          git merge origin/main --no-commit --no-ff || {
+          # Checkout base branch (release)
+          git checkout release
+
+          # Merge PR branch (GITHUB_HEAD_REF)
+          git merge origin/${{ github.head_ref }} --no-commit --no-ff || {
             echo "Merge conflict detected!";
             exit 1;
           }
