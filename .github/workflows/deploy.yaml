@@ -1,7 +1,6 @@
 name: Deploy Pipeline
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       environment:
