@@ -1,6 +1,8 @@
 name: Deploy Pipeline
 
 on:
+  schedule:
+    - cron: "0 * * * *"   # every hour
   workflow_dispatch:
     inputs:
       environment:
@@ -12,7 +14,7 @@ on:
         required: true
         default: stage
       image-tag:
-        description: Image tag (commit short sha or semantic version)
+        description: Image tag (e.g. stage-a9a0e54, v1.0.0)
         required: true
 
 run-name: "Deploy version: ${{ inputs.image-tag }} to ${{ inputs.environment }}"
