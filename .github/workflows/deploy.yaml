@@ -5,7 +5,7 @@ on:
     inputs:
       environment:
         type: choice
-        description: Target envrionment
+        description: Target environment
         options:
           - stage
           - prod
@@ -22,17 +22,17 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      scale: ${{ steps.detect.outputs.environment }}
+      environment: ${{ steps.detect.outputs.environment }}
 
     steps:
-      - name: Detect envrionment
-        id: delect
+      - name: Detect environment
+        id: detect
         run: echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
 
   deploy-service:
     needs: detect-environment
     runs-on: ubuntu-latest
-    environment: {{ needs.detect-environment.outputs.environment }}
+    environment: ${{ needs.detect-environment.outputs.environment }}
 
     steps:
       - uses: actions/checkout@v4
