@@ -1,5 +1,5 @@
 name: Scaling Job (stage)
-description: Scaling job for staging environment
+description: Scaling job for AppRunner in staging environment
 
 on:
   schedule:
@@ -20,6 +20,7 @@ run-name: Scale-${{ needs.scale.outputs.scale }} stage
 jobs:
   scale:
     runs-on: ubuntu-latest
+    environment: stage
     name: scale-${{ steps.detect.outputs.scale }}
 
     outputs:
