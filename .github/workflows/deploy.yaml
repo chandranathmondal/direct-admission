@@ -1,8 +1,7 @@
 name: Deploy Pipeline
 
 on:
-  schedule:
-    - cron: "0 * * * *"   # every hour
+  push:
   workflow_dispatch:
     inputs:
       environment:
