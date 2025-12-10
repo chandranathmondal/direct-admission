@@ -80,6 +80,7 @@ jobs:
       needs.detect-environment.outputs.environment == 'prod'
     runs-on: ubuntu-latest
     environment: ${{ needs.detect-environment.outputs.environment }}
+    name: continuous-delivery (${{ needs.detect-environment.outputs.environment }})
 
     permissions:
       id-token: write
@@ -130,7 +131,7 @@ jobs:
         run: docker push ${{ steps.build-image.outputs.image-path }}
 
   continuous-deployment:
-    needs: continuous-delivery
+    needs: [detect-environment, continuous-delivery]
     runs-on: ubuntu-latest
     environment: ${{ needs.detect-environment.outputs.environment }}
     name: continuous-deployment (${{ needs.detect-environment.outputs.environment }})
