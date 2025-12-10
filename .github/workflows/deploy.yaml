@@ -16,7 +16,7 @@ on:
         description: Image tag (e.g. stage-a9a0e54, v1.0.0)
         required: true
 
-job:
+jobs:
   test:
     runs-on: ubuntu-latest
     steps:
