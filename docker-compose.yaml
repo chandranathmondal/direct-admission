@@ -5,7 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        REACT_APP_INITIAL_ADMIN_EMAIL: "${REACT_APP_INITIAL_ADMIN_EMAIL}"
         REACT_APP_GOOGLE_CLIENT_ID: "${REACT_APP_GOOGLE_CLIENT_ID}"
     image: direct-admission:local
     ports:

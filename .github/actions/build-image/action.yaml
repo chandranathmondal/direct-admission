@@ -6,9 +6,6 @@ inputs:
     description: Docker image tag
     required: true
 
-  react-app-initial-admin-email:
-    required: true
-
   react-app-google-client-id:
     required: true
 
@@ -27,7 +24,6 @@ runs:
       shell: bash
       run: |
         docker build \
-          --build-arg REACT_APP_INITIAL_ADMIN_EMAIL="${{ inputs.react-app-initial-admin-email }}" \
           --build-arg REACT_APP_GOOGLE_CLIENT_ID="${{ inputs.react-app-google-client-id }}" \
           -t ${{ env.DOCKER_REPO }}:${{ inputs.image-tag }} .
 
