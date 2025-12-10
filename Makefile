@@ -30,7 +30,6 @@ npm-dev:
 
 docker-build:
 	docker build \
-		--build-arg REACT_APP_INITIAL_ADMIN_EMAIL="$(REACT_APP_INITIAL_ADMIN_EMAIL)" \
 		--build-arg REACT_APP_GOOGLE_CLIENT_ID="$(REACT_APP_GOOGLE_CLIENT_ID)" \
 		-t direct-admission:local .
 

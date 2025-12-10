@@ -16,6 +16,7 @@ concurrency:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
@@ -39,17 +40,13 @@ jobs:
             exit 1;
           }
       
-      - name: Generate tag (Commit short SHA)
-        run: echo "IMAGE_TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
       - uses: ./.github/actions/build-image
         id: build-image
         with:
-          image-tag: ${{ env.IMAGE_TAG }}
-          react-app-initial-admin-email: ${{ vars.REACT_APP_INITIAL_ADMIN_EMAIL }}
+          image-tag: ci
           react-app-google-client-id: ${{ vars.REACT_APP_GOOGLE_CLIENT_ID }}
         env:
-          DOCKER_REPO: ${{ vars.DOCKER_REPO }}
+          DOCKER_REPO: direct-admission
 
       - uses: ./.github/actions/run-tests
         with:

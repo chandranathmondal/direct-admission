@@ -4,11 +4,9 @@
 FROM node:18-alpine AS build
 
 # Accept build arguments
-ARG REACT_APP_INITIAL_ADMIN_EMAIL
 ARG REACT_APP_GOOGLE_CLIENT_ID
 
 # Export as env variable inside the container
-ENV REACT_APP_INITIAL_ADMIN_EMAIL=$REACT_APP_INITIAL_ADMIN_EMAIL
 ENV REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
 
 # Set working directory inside the container
