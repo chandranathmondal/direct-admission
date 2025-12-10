@@ -140,33 +140,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/deploy-to-aws
-        if: vars.CLOUD == 'AWS'
+      - uses: ./.github/actions/deploy-service
         with:
+          cloud: ${{ vars.CLOUD }}
           service-name: ${{ vars.SERVICE_NAME }}
           image-path: ${{ needs.continuous-delivery.outputs.image-path }}
-          gemini-api-key-secret-arn: ${{ vars.GEMINI_API_KEY_SECRET_REF }}
+          gemini-api-key-secret-ref: ${{ vars.GEMINI_API_KEY_SECRET_REF }}
           google-sheet-id: ${{ vars.GOOGLE_SHEET_ID }}
           google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          google-private-key-secret-arn: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_REF }}
+          google-private-key-secret-ref: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_REF }}
         env:
           GH_RUNNER_ROLE_ARN: ${{ vars.GH_RUNNER_ROLE_ARN }}
           APP_RUNNER_INSTANCE_ROLE_NAME: ${{ vars.APP_RUNNER_INSTANCE_ROLE_NAME }}
-          REGION: ${{ vars.REGION }}
-          CPU: ${{ vars.CPU }}
-          MEMORY: ${{ vars.MEMORY }}
-
-      - uses: ./.github/actions/deploy-to-gcp
-        if: vars.CLOUD == 'GCP'
-        with:
-          service-name: ${{ vars.SERVICE_NAME }}
-          image-path: ${{ needs.continuous-delivery.outputs.image-path }}
-          gemini-api-key-secret-name: ${{ vars.GEMINI_API_KEY_SECRET_REF }}
-          google-sheet-id: ${{ vars.GOOGLE_SHEET_ID }}
-          google-service-account-email: ${{ vars.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-          google-private-key-secret-name: ${{ vars.GOOGLE_PRIVATE_KEY_SECRET_REF }}
-        env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
           GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
           REGION: ${{ vars.REGION }}
+          CPU: ${{ vars.CPU }}
           MEMORY: ${{ vars.MEMORY }}
