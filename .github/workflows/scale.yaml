@@ -22,7 +22,7 @@ jobs:
     if: vars.CLOUD == 'AWS'
     runs-on: ubuntu-latest
     environment: stage
-    name: scale-${{ steps.detect.outputs.scale }}
+    name: scale-${{ inputs.scale }}
 
     steps:
       - name: Determine trigger type & scale value
