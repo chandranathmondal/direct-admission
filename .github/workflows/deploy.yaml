@@ -33,6 +33,7 @@ jobs:
     needs: detect-environment
     runs-on: ubuntu-latest
     environment: ${{ needs.detect-environment.outputs.environment }}
+    name: deploy-service (${{ needs.detect-environment.outputs.environment }})
 
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +50,7 @@ jobs:
         env:
           GH_RUNNER_ROLE_ARN: ${{ vars.GH_RUNNER_ROLE_ARN }}
           APP_RUNNER_INSTANCE_ROLE_NAME: ${{ vars.APP_RUNNER_INSTANCE_ROLE_NAME }}
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GH_RUNNER_SA_KEY: ${{ secrets.GH_RUNNER_SA_KEY }}
           GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
           REGION: ${{ vars.REGION }}
           CPU: ${{ vars.CPU }}

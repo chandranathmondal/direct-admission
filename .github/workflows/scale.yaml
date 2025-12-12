@@ -15,26 +15,21 @@ on:
         required: true
         default: up
 
-run-name: Scale-${{ needs.scale.outputs.scale }} stage
+run-name: Scale-${{ inputs.scale }} stage
 
 jobs:
   scale:
     if: vars.CLOUD == 'AWS'
     runs-on: ubuntu-latest
     environment: stage
-    name: scale-${{ steps.detect.outputs.scale }}
-
-    outputs:
-      scale: ${{ steps.detect.outputs.scale }}
 
     steps:
       - name: Determine trigger type & scale value
-        id: delect
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-              echo "scale=down" >> $GITHUB_OUTPUT
+              echo "SCALE=down" >> $GITHUB_ENV
           else
-              echo "scale=${{ github.event.inputs.scale }}" >> $GITHUB_OUTPUT
+              echo "SCALE=${{ github.event.inputs.scale }}" >> $GITHUB_ENV
           fi
 
       - name: Scale AppRunner
@@ -42,7 +37,7 @@ jobs:
           ACCOUNT_ID=(echo "$GITHUB_ROLE_ARN" | cut -d: -f5)
           SERVICE_ARN=arn:aws:apprunner:${{ vars.REGION }}:$ACCOUNT_ID:service/${{ vars.SERVICE_NAME }}
 
-          if [ "${{ steps.detect.outputs.scale }}" = "up" ]; then
+          if [ "${{ env.SCALE }}" = "up" ]; then
             aws apprunner resume-service --service-arn $SERVICE_ARN
             echo "Environment scaled-up ⬆️"
           else
