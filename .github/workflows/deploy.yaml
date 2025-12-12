@@ -33,6 +33,7 @@ jobs:
     needs: detect-environment
     runs-on: ubuntu-latest
     environment: ${{ needs.detect-environment.outputs.environment }}
+    name: deploy-service (${{ needs.detect-environment.outputs.environment }})
 
     steps:
       - uses: actions/checkout@v4

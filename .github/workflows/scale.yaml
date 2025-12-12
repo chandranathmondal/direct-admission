@@ -15,7 +15,7 @@ on:
         required: true
         default: up
 
-run-name: Scale-${{ needs.scale.outputs.scale }} stage
+run-name: Scale-${{ inputs.scale }} stage
 
 jobs:
   scale:
