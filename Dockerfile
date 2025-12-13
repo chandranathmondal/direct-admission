@@ -1,7 +1,7 @@
 # ==========================================
 # Stage 1: Build the React Frontend
 # ==========================================
-FROM node:18-alpine AS build
+FROM node:20-alpine AS build
 
 # Accept build arguments
 ARG REACT_APP_GOOGLE_CLIENT_ID
@@ -32,7 +32,7 @@ RUN npm prune --production
 # ==========================================
 # Stage 2: Setup the Production Server
 # ==========================================
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
