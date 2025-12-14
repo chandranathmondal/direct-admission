@@ -334,10 +334,19 @@ app.get('*', (req, res) => {
 // STARTUP
 // ============================================================================
 
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
-  // Initial Cache Load
+const startServer = async () => {
+  console.log("Initializing data cache from Google Sheets...");
+  
+  // Wait for the cache to load BEFORE starting the server
+  // This ensures that when the server accepts the first request, data is present.
   await refreshCache();
-  // Periodic Refresh (every 1 hour)
-  setInterval(refreshCache, 60 * 60 * 1000);
-});
+  
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    
+    // Continue refreshing periodically
+    setInterval(refreshCache, 60 * 60 * 1000);
+  });
+};
+
+startServer();
