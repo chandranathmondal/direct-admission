@@ -15,7 +15,7 @@ on:
         required: true
         default: up
 
-run-name: Scale-${{ inputs.scale }} stage
+run-name: Scale-${{ github.event_name == 'schedule' && 'down' || github.event.inputs.scale }} stage
 
 jobs:
   scale:
