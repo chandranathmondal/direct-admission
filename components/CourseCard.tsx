@@ -47,7 +47,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, onClick }) => {
           </div>
 
           <div className="flex-grow">
-            <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-800 transition-colors leading-snug font-serif">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-blue-800 transition-colors leading-snug font-serif">
               {course.courseName}
             </h3>
             <p className="text-sm text-slate-600 font-serif italic mt-0.5">{course.collegeName}</p>
