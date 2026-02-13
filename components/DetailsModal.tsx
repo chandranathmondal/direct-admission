@@ -100,7 +100,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                )}
              </div>
              <div>
-               <h2 className="text-2xl font-bold leading-tight">
+               <h2 className="text-lg sm:text-2xl font-bold leading-tight">
                  {currentView === 'course' && activeCourse ? activeCourse.courseName : collegeData.name}
                </h2>
                
