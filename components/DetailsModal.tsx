@@ -107,13 +107,13 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                {/* Context Navigation */}
                {currentView === 'course' && initialView === 'college' ? (
                  <div className="flex flex-wrap items-center gap-3 mt-1">
-                    <p className="font-medium flex items-center gap-2 text-blue-100">
-                      <span className="text-xl">🏛️</span>
+                    <p className="font-medium flex items-center gap-2 text-blue-100 text-xs sm:text-sm">
+                      <span className="text-lg">🏛️</span>
                       <span>{collegeData.name}</span>
                     </p>
                     <button 
                       onClick={() => setCurrentView('college')}
-                      className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
+                      className="text-[10px] sm:text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
                     >
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                       Go back
@@ -122,21 +122,21 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                ) : (
                  currentView === 'course' ? (
                     <div className="flex flex-wrap items-center gap-3 mt-1">
-                      <p className="font-medium flex items-center gap-2 text-blue-100">
-                        <span className="text-xl">🏛️</span>
+                      <p className="font-medium flex items-center gap-2 text-blue-100 text-xs sm:text-sm">
+                        <span className="text-lg">🏛️</span>
                         <span>{collegeData.name}</span>
                       </p>
                       <button 
                         onClick={() => setCurrentView('college')}
-                        className="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
+                        className="text-[10px] sm:text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold"
                       >
                         View College
                       </button>
                     </div>
                  ) : (
-                   <div className="font-medium mt-1 flex items-center gap-1 text-white/90 flex-wrap">
+                   <div className="font-medium mt-1 flex items-center gap-1 text-white/90 flex-wrap text-xs sm:text-sm">
                      <div className="flex items-center gap-1 shrink-0">
-                       <svg className="w-4 h-4 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                       <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                        <span>{collegeData.location}, {collegeData.state}</span>
                      </div>
                      

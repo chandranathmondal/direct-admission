@@ -108,15 +108,15 @@ export const CourseModal: React.FC<CourseModalProps> = ({
                {currentView === 'course' && initialView === 'college' ? (
                  <button 
                   onClick={() => setCurrentView('college')}
-                  className="text-blue-200 font-medium text-lg mt-1 hover:text-white hover:underline text-left transition-colors flex items-center gap-2"
+                  className="text-blue-200 font-medium text-sm sm:text-lg mt-1 hover:text-white hover:underline text-left transition-colors flex items-center gap-2"
                  >
                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                    Back to {collegeData.name} Courses
                  </button>
                ) : (
-                 <div className={`font-medium mt-1 flex items-center gap-1 flex-wrap ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`}>
+                 <div className={`font-medium mt-1 flex items-center gap-1 flex-wrap text-xs sm:text-sm ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`}>
                    <div className="flex items-center gap-1 shrink-0">
-                     <svg className={`w-4 h-4 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                     <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                      <span>{collegeData.location}, {collegeData.state}</span>
                    </div>
                    
