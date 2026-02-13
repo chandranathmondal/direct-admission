@@ -100,7 +100,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
                )}
              </div>
              <div>
-               <h2 className="text-lg sm:text-2xl font-bold leading-tight">
+               <h2 className="text-base sm:text-2xl font-bold leading-tight">
                  {currentView === 'course' && activeCourse ? activeCourse.courseName : collegeData.name}
                </h2>
                
@@ -114,22 +114,24 @@ export const CourseModal: React.FC<CourseModalProps> = ({
                    Back to {collegeData.name} Courses
                  </button>
                ) : (
-                 <p className={`font-medium mt-1 flex items-center gap-1 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`}>
-                   <svg className={`w-4 h-4 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                   <span>{collegeData.location}, {collegeData.state}</span>
+                 <div className={`font-medium mt-1 flex items-center gap-1 flex-wrap ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`}>
+                   <div className="flex items-center gap-1 shrink-0">
+                     <svg className={`w-4 h-4 ${isCollegeView ? 'text-white/90' : 'text-blue-200'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                     <span>{collegeData.location}, {collegeData.state}</span>
+                   </div>
                    
                    {collegeData.mapUrl && (
                       <a 
                         href={collegeData.mapUrl} 
                         target="_blank" 
                         rel="noreferrer" 
-                        className={`text-xs ml-2 flex items-center gap-0.5 hover:underline transition-all ${isCollegeView ? 'text-amber-200 hover:text-white' : 'text-amber-400 hover:text-amber-300'}`}
+                        className={`text-[10px] ml-1 flex items-center justify-center gap-0.5 hover:underline transition-all min-w-[120px] ${isCollegeView ? 'text-amber-200 hover:text-white' : 'text-amber-400 hover:text-amber-300'}`}
                         title="View on Google Maps"
                       >
                          View in Google Map &rarr;
                       </a>
                    )}
-                 </p>
+                 </div>
                )}
              </div>
            </div>

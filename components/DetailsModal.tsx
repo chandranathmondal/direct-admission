@@ -100,7 +100,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                )}
              </div>
              <div>
-               <h2 className="text-lg sm:text-2xl font-bold leading-tight">
+               <h2 className="text-base sm:text-2xl font-bold leading-tight">
                  {currentView === 'course' && activeCourse ? activeCourse.courseName : collegeData.name}
                </h2>
                
@@ -134,22 +134,24 @@ export const DetailsModal: React.FC<DetailsModalProps> = ({
                       </button>
                     </div>
                  ) : (
-                   <p className="font-medium mt-1 flex items-center gap-1 text-white/90">
-                     <svg className="w-4 h-4 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                     <span>{collegeData.location}, {collegeData.state}</span>
+                   <div className="font-medium mt-1 flex items-center gap-1 text-white/90 flex-wrap">
+                     <div className="flex items-center gap-1 shrink-0">
+                       <svg className="w-4 h-4 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                       <span>{collegeData.location}, {collegeData.state}</span>
+                     </div>
                      
                      {collegeData.mapUrl && (
                         <a 
                           href={collegeData.mapUrl} 
                           target="_blank" 
                           rel="noreferrer" 
-                          className="text-xs ml-2 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center gap-1 font-semibold no-underline"
+                          className="text-[10px] bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition-colors flex items-center justify-center gap-1 font-semibold no-underline min-w-[120px]"
                           title="View on Google Maps"
                         >
                            View in Google Map
                         </a>
                      )}
-                   </p>
+                   </div>
                  )
                )}
              </div>
